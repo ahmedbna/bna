@@ -1,9 +1,15 @@
-import NovelEditor from '@/components/editor/advanced-editor';
+'use client';
+
+import Editor from '@/components/editor';
 
 export default function Home() {
+  const handleChangeContent = (content: string) => {
+    console.log(content);
+  };
+
   return (
-    <div className='h-full mx-56 flex justify-center '>
-      <NovelEditor />
+    <div className='h-full min-h-16 mx-56 flex justify-center '>
+      <Editor handleChangeContent={handleChangeContent} />
     </div>
   );
 }

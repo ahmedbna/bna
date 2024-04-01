@@ -1,17 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter as FontSans } from 'next/font/google';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ClerkProvider } from '@/providers/clerk-provider';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/sonner';
-import { cn } from '@/lib/utils';
+import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
-import '@/styles/prosemirror.css';
+import '@mantine/core/styles.css';
 
-const fontSans = FontSans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Qalam',
@@ -39,12 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body
-        className={cn(
-          'min-h-screen w-full bg-background font-sans antialiased',
-          fontSans.variable
-        )}
-      >
+      <body className={inter.className}>
         <ClerkProvider>
           <ThemeProvider
             enableSystem
