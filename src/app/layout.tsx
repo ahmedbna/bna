@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ClerkProvider } from '@/providers/clerk-provider';
-import { Header } from '@/components/header';
+import { Header } from '@/components/header/header';
 import { Toaster } from '@/components/ui/sonner';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import '@mantine/core/styles.css';
+import { SearchCommand } from '@/components/search';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -45,8 +46,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <Header />
+            <SearchCommand />
             <main className='h-full w-full pt-20'>{children}</main>
-            <Toaster position='bottom-center' />
+            <Toaster position='top-center' />
           </ThemeProvider>
         </ClerkProvider>
       </body>

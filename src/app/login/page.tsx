@@ -11,7 +11,7 @@ export default function Login() {
       {!isLoading && !isAuthenticated && (
         <>
           <SignInButton mode='modal'>
-            <Button size='sm'>Login</Button>
+            <Button>Login</Button>
           </SignInButton>
         </>
       )}

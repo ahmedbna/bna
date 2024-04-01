@@ -17,7 +17,7 @@ type Props = {
   post: any;
 };
 
-export function PostCard({ post }: Props) {
+export const PostCard = ({ post }: Props) => {
   return (
     <Card className='w-[350px]'>
       <Link href={`/post/${post._id}`}>
@@ -32,9 +32,7 @@ export function PostCard({ post }: Props) {
         </CardHeader>
         <CardContent>
           <CardTitle>{post.title}</CardTitle>
-          <CardDescription>
-            {'Deploy your new project in one-click.'}
-          </CardDescription>
+          <CardDescription>{post.excerpt}</CardDescription>
         </CardContent>
       </Link>
       <CardFooter className='flex justify-between'>
@@ -58,4 +56,4 @@ export function PostCard({ post }: Props) {
       </CardFooter>
     </Card>
   );
-}
+};
