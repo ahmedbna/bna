@@ -46,7 +46,7 @@ export default function RootLayout({
           >
             <Header />
             <main className='h-full w-full pt-20'>{children}</main>
-            <Toaster />
+            <Toaster position='bottom-center' />
           </ThemeProvider>
         </ClerkProvider>
       </body>
