@@ -14,11 +14,11 @@ type EditorProps = {
   editable?: boolean;
 };
 
-export default function Editor({
+export const Editor = ({
   handleChangeContent,
   initialContent,
   editable = true,
-}: EditorProps) {
+}: EditorProps) => {
   const { resolvedTheme } = useTheme();
   const [blocks, setBlocks] = useState<Block[]>([]);
 
@@ -41,4 +41,4 @@ export default function Editor({
       className='w-full h-full flex flex-col '
     />
   );
-}
+};

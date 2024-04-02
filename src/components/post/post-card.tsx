@@ -12,9 +12,10 @@ import {
 import Image from 'next/image';
 import { Bookmark, MessageCircle, Send } from 'lucide-react';
 import Link from 'next/link';
+import { Doc } from '../../../convex/_generated/dataModel';
 
 type Props = {
-  post: any;
+  post: Doc<'posts'>;
 };
 
 export const PostCard = ({ post }: Props) => {
@@ -32,7 +33,7 @@ export const PostCard = ({ post }: Props) => {
         </CardHeader>
         <CardContent>
           <CardTitle>{post.title}</CardTitle>
-          <CardDescription>{post.excerpt}</CardDescription>
+          {/* <CardDescription>{post.excerpt}</CardDescription> */}
         </CardContent>
       </Link>
       <CardFooter className='flex justify-between'>

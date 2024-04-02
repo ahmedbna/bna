@@ -1,5 +1,5 @@
 'use client';
-import Editor from '@/components/editor';
+import { Editor } from '@/components/editor';
 
 export default function Post() {
   const handleChangeContent = (content: string) => {
@@ -7,7 +7,7 @@ export default function Post() {
   };
 
   return (
-    <div className='h-full min-h-16 mx-56 flex justify-center '>
+    <div className='h-full min-h-16 flex justify-center '>
       <Editor handleChangeContent={handleChangeContent} />
     </div>
   );
