@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { useUser } from '@clerk/clerk-react';
 import { Bookmark, MessageCircle, Send } from 'lucide-react';
 import Link from 'next/link';
+import { formatTimeAgo } from '@/lib/formatTimeAgo';
 
 interface Props {
   post: Doc<'posts'>;
@@ -36,7 +37,9 @@ export default function PostAuthor({ post }: Props) {
             <p className='text-sm font-medium leading-none'>
               {post?.userInfo?.name}
             </p>
-            <p className='text-sm text-muted-foreground'>1 hour ago</p>
+            <p className='text-sm text-muted-foreground'>
+              {formatTimeAgo(post._creationTime)}
+            </p>
           </div>
         </Link>
         <div className='flex items-center gap-1'>

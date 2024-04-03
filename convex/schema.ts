@@ -5,6 +5,8 @@ export default defineSchema({
   posts: defineTable({
     userId: v.string(),
     title: v.string(),
+    color1: v.string(),
+    color2: v.string(),
     content: v.optional(v.array(v.any())),
     imageUrl: v.optional(v.string()),
     coverImage: v.optional(v.id('_storage')),

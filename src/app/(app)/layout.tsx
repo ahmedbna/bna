@@ -36,6 +36,6 @@ export default function RootLayout({
   }
 
   return (
-    <div className='h-full md:max-w-3xl lg:max-w-4xl mx-auto'>{children}</div>
+    <div className='h-full md:max-w-5xl lg:max-w-6xl mx-auto'>{children}</div>
   );
 }

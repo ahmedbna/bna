@@ -13,14 +13,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bookmark, MessageCircle, Send } from 'lucide-react';
 import { Doc } from '../../../convex/_generated/dataModel';
-import Mesh from '../mesh';
+import Gradient from '../gradient';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
+import { useUser } from '@clerk/clerk-react';
 
 type Props = {
   post: Doc<'posts'>;
 };
 
 export const PostCard = ({ post }: Props) => {
+  const { user } = useUser();
   const excerpt = post.content?.filter(
     (block) => block.type === 'paragraph' && block.content?.length
   )[0]?.content?.[0]?.text;
@@ -30,7 +32,12 @@ export const PostCard = ({ post }: Props) => {
       <div>
         <CardHeader className='p-4 pb-0'>
           <div className='flex items-center justify-between'>
-            <Link href={`/user/${post.userId}`} className='flex items-center'>
+            <Link
+              href={`${
+                post.userId === user?.id ? `/me` : `/user/${post.userId}`
+              }`}
+              className='flex items-center'
+            >
               <Avatar className='h-8 w-8'>
                 <AvatarImage
                   src={post?.userInfo?.pictureUrl}
@@ -56,7 +63,13 @@ export const PostCard = ({ post }: Props) => {
           </div>
         </CardHeader>
 
-        <Link href={`/post/${post._id}`}>
+        <Link
+          href={`${
+            post.isPublished === false && post.userId === user?.id
+              ? `/me/draft/${post._id}`
+              : `/post/${post._id}`
+          }`}
+        >
           <CardContent className='p-4'>
             <div className='mb-4'>
               {post.imageUrl ? (
@@ -65,10 +78,14 @@ export const PostCard = ({ post }: Props) => {
                   width={500}
                   height={500}
                   alt='Picture of the author'
-                  className='rounded-lg'
+                  className='rounded-lg max-h-[210px]'
                 />
               ) : (
-                <Mesh height={200} />
+                <Gradient
+                  color1={post.color1}
+                  color2={post.color2}
+                  height={200}
+                />
               )}
             </div>
 

@@ -57,7 +57,7 @@ export default function Account() {
         </div>
       </div>
 
-      <Tabs defaultValue='published' className='w-[400px]'>
+      <Tabs defaultValue='published'>
         <TabsList className='mb-4'>
           <TabsTrigger value='published'>Published</TabsTrigger>
           <TabsTrigger value='draft'>Draft</TabsTrigger>
@@ -77,7 +77,7 @@ export default function Account() {
             ))}
           </div>
         </TabsContent>
-        <TabsContent value='draft'>
+        <TabsContent value='saved'>
           <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
             {draftPosts?.map((post) => (
               <PostCard key={post._id} post={post} />

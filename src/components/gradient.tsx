@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import randomColor from 'randomcolor';
 
 type Props = {
+  color1: string;
+  color2: string;
   height?: number;
 };
 
-const Mesh = ({ height = 200 }: Props) => {
+const Gradient = ({ color1, color2, height = 200 }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -22,10 +23,6 @@ const Mesh = ({ height = 200 }: Props) => {
     if (!ctx) return;
 
     const height = canvas.height; // No change to height
-
-    // Generate random colors
-    const color1 = randomColor();
-    const color2 = randomColor();
 
     // Create gradient
     const gradient = ctx.createLinearGradient(0, 0, width, height);
@@ -46,4 +43,4 @@ const Mesh = ({ height = 200 }: Props) => {
   );
 };
 
-export default Mesh;
+export default Gradient;

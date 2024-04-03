@@ -8,7 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 import { api } from '../../../convex/_generated/api';
 import { UploadImage } from '../upload-image';
-import Mesh from '../mesh';
+import Gradient from '../gradient';
 
 interface Props {
   isDraft: boolean;
@@ -53,7 +53,7 @@ export default function PostHeader({ isDraft = false, post }: Props) {
       {isDraft && post.imageUrl === undefined ? (
         <UploadImage postId={post._id} />
       ) : !post.imageUrl ? (
-        <Mesh height={180} />
+        <Gradient color1={post.color1} color2={post.color2} height={120} />
       ) : (
         <Image
           src={post.imageUrl!}

@@ -1,6 +1,5 @@
 'use client';
 
-import { PostPage } from '@/components/post';
 import PostAuthor from '@/components/post/post-author';
 import PostHeader from '@/components/post/post-header';
 import { Spinner } from '@/components/spinner';
@@ -74,12 +73,15 @@ interface Props {
 
 export default function Post({ params }: Props) {
   const router = useRouter();
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
 
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
     []
   );
 
+  const update = useMutation(api.posts.update);
   const post = useQuery(api.posts.getPostById, {
     postId: params.id,
   });
@@ -95,30 +97,30 @@ export default function Post({ params }: Props) {
     return <div>Not found</div>;
   }
 
-  // const handleDraftPost = () => {
-  //   setLoading(true);
+  const handleDraftPost = () => {
+    if (user?.id !== post.userId) return;
 
-  //   const promise = update({
-  //     id: params.id,
-  //     isPublished: false,
-  //   });
+    setLoading(true);
 
-  //   toast.promise(promise, {
-  //     loading: 'Drafting post...',
-  //     success: 'Post Drafted!',
-  //     error: 'Something went wrong',
-  //   });
+    const promise = update({
+      id: params.id,
+      isPublished: false,
+    });
 
-  //   promise
-  //     .then((postId) => {
-  //       if (postId) router.push(`/me/post/draft/${postId}`);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // };
+    toast.promise(promise, {
+      loading: 'Drafting post...',
+      success: 'Post Drafted!',
+      error: 'Something went wrong',
+    });
 
-  console.log(post);
+    promise
+      .then((postId) => {
+        if (postId) router.push(`/me/draft/${postId}`);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <div>
@@ -133,17 +135,19 @@ export default function Post({ params }: Props) {
           handleChangeContent={() => null}
         />
 
-        {/* <div className='w-full flex items-center  p-6'>
-          <Button
-            className='w-full'
-            size='lg'
-            variant='default'
-            disabled={loading}
-            onClick={handleDraftPost}
-          >
-            {loading ? <Spinner /> : 'Draft'}
-          </Button>
-        </div> */}
+        {user?.id === post.userId ? (
+          <div className='w-full flex items-center p-6'>
+            <Button
+              className='w-full'
+              size='lg'
+              variant='default'
+              disabled={loading}
+              onClick={handleDraftPost}
+            >
+              {loading ? <Spinner /> : 'Draft Post'}
+            </Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

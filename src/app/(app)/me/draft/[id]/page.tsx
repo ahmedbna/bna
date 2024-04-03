@@ -3,8 +3,8 @@
 import { useMutation, useQuery } from 'convex/react';
 import { Spinner } from '@/components/spinner';
 import PostHeader from '@/components/post/post-header';
-import { api } from '../../../../../../../convex/_generated/api';
-import { Doc, Id } from '../../../../../../../convex/_generated/dataModel';
+import { api } from '../../../../../../convex/_generated/api';
+import { Doc, Id } from '../../../../../../convex/_generated/dataModel';
 import { useUser } from '@clerk/clerk-react';
 import { redirect, useRouter } from 'next/navigation';
 import { Block } from '@blocknote/core';
@@ -32,6 +32,7 @@ export default function Draft({ params }: Props) {
   );
 
   const update = useMutation(api.posts.update);
+
   const post = useQuery(api.posts.getMyDraftById, {
     postId: params.id,
   });
@@ -50,8 +51,13 @@ export default function Draft({ params }: Props) {
       </div>
     );
   }
+
   if (post === null) {
-    return <div>Not found</div>;
+    return (
+      <div className='h-full flex items-center justify-center'>
+        <div>Not found</div>
+      </div>
+    );
   }
 
   if (post.userId !== user?.id) {
@@ -74,7 +80,7 @@ export default function Draft({ params }: Props) {
 
     promise
       .then((postId) => {
-        if (postId) router.push(`/me/post/published/${postId}`);
+        if (postId) router.push(`/post/${postId}`);
       })
       .finally(() => {
         setLoading(false);
@@ -94,7 +100,7 @@ export default function Draft({ params }: Props) {
           handleChangeContent={handleChangeContent}
         />
 
-        <div className='w-full flex items-center gap-4 p-6'>
+        <div className='w-full flex items-center gap-4 p-6 pt-24'>
           <Button
             className='w-full'
             size='lg'
@@ -104,6 +110,7 @@ export default function Draft({ params }: Props) {
           >
             {loading ? <Spinner /> : 'Delete'}
           </Button>
+
           <Button
             className='w-full'
             size='lg'

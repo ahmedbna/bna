@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { asyncMap } from 'convex-helpers';
+import randomColor from 'randomcolor';
 
 export const get = query({
   handler: async (ctx) => {
@@ -120,7 +121,12 @@ export const getMyDraftById = query({
       const imageUrl =
         coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
 
-      return { ...post, imageUrl };
+      const userInfo = await ctx.db
+        .query('users')
+        .withIndex('by_userId', (q) => q.eq('userId', post.userId))
+        .first();
+
+      return { ...post, imageUrl, userInfo };
     } else {
       return null;
     }
@@ -174,10 +180,16 @@ export const create = mutation({
 
     const userId = identity.subject;
 
+    // Generate random colors
+    const color1 = randomColor();
+    const color2 = randomColor();
+
     const post = await ctx.db.insert('posts', {
-      title: args.title,
       userId,
+      title: args.title,
       isPublished: false,
+      color1,
+      color2,
     });
 
     return post;

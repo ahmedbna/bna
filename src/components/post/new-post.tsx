@@ -37,7 +37,7 @@ export const NewPost = () => {
 
     response
       .then((postId) => {
-        if (postId) router.push(`me/post/draft/${postId}`);
+        if (postId) router.push(`me/draft/${postId}`);
       })
       .finally(() => {
         setLoading(false);
