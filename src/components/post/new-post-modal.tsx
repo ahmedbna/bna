@@ -71,15 +71,15 @@ export const NewPostModal = () => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    const response = create({ title: values.title, excerpt: values.excerpt });
+    const promise = create({ title: values.title });
 
-    toast.promise(response, {
+    toast.promise(promise, {
       loading: 'Creating post...',
       success: 'Post created!',
       error: 'Something went wrong',
     });
 
-    response
+    promise
       .then((postId) => {
         if (postId) router.push(`me/post/draft/${postId}`);
       })

@@ -3,12 +3,12 @@
 import Image from 'next/image';
 import { ElementRef, useRef, useState } from 'react';
 import { Doc } from '../../../convex/_generated/dataModel';
-import { ImageMinus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useMutation } from 'convex/react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { api } from '../../../convex/_generated/api';
+import { UploadImage } from '../upload-image';
+import Mesh from '../mesh';
 
 interface Props {
   isDraft: boolean;
@@ -50,26 +50,22 @@ export default function PostHeader({ isDraft = false, post }: Props) {
 
   return (
     <div className='w-full'>
-      {/* {isDraft && !post.coverImage ? (
-        <Button
-          className='w-full flex flex-col items-center justify-center'
-          onClick={() => {}}
-        >
-          <ImageMinus className='w-16 h-16' />
-          <p>Add Cover Image</p>
-        </Button>
-      ) : null} */}
+      {isDraft && post.imageUrl === undefined ? (
+        <UploadImage postId={post._id} />
+      ) : !post.imageUrl ? (
+        <Mesh height={180} />
+      ) : (
+        <Image
+          src={post.imageUrl!}
+          width={1000}
+          height={400}
+          alt='Picture of the author'
+          className='w-full max-h-[380px]'
+          layout='responsive'
+        />
+      )}
 
-      <Image
-        src='/img.jpg'
-        width={1000}
-        height={200}
-        alt='Picture of the author'
-        className='w-full max-h-[460px] rounded-lg'
-        layout='responsive'
-      />
-
-      <div className='px-[54px] flex flex-col gap-4 mt-12'>
+      <div className='px-[54px] flex flex-col gap-4 mt-8'>
         {editingTitle && isDraft ? (
           <TextareaAutosize
             ref={inputRef}

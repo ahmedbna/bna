@@ -1,5 +1,6 @@
 import * as React from 'react';
-
+import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -9,49 +10,93 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bookmark, MessageCircle, Send } from 'lucide-react';
-import Link from 'next/link';
 import { Doc } from '../../../convex/_generated/dataModel';
+import Mesh from '../mesh';
+import { formatTimeAgo } from '@/lib/formatTimeAgo';
 
 type Props = {
   post: Doc<'posts'>;
 };
 
 export const PostCard = ({ post }: Props) => {
+  const excerpt = post.content?.filter(
+    (block) => block.type === 'paragraph' && block.content?.length
+  )[0]?.content?.[0]?.text;
+
   return (
-    <Card className='w-[350px]'>
-      <Link href={`/post/${post._id}`}>
-        <CardHeader>
-          <Image
-            src='/img.jpg'
-            width={500}
-            height={500}
-            alt='Picture of the author'
-            className='rounded-lg'
-          />
+    <Card className='w-[350px] flex flex-col justify-between'>
+      <div>
+        <CardHeader className='p-4 pb-0'>
+          <div className='flex items-center justify-between'>
+            <Link href={`/user/${post.userId}`} className='flex items-center'>
+              <Avatar className='h-8 w-8'>
+                <AvatarImage
+                  src={post?.userInfo?.pictureUrl}
+                  alt={post?.userInfo?.name}
+                />
+                <AvatarFallback>
+                  {post?.userInfo?.name?.charAt(0)}
+                  {post?.userInfo?.name?.split(' ')?.pop()?.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div className='ml-4'>
+                <p className='text-sm font-medium leading-none'>
+                  {post?.userInfo?.name}
+                </p>
+                <p className='text-xs text-muted-foreground'>
+                  {formatTimeAgo(post._creationTime)}
+                </p>
+              </div>
+            </Link>
+            <Button variant='outline' size='sm' className='ml-auto font-medium'>
+              Follow
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <CardTitle>{post.title}</CardTitle>
-          {/* <CardDescription>{post.excerpt}</CardDescription> */}
-        </CardContent>
-      </Link>
-      <CardFooter className='flex justify-between'>
+
+        <Link href={`/post/${post._id}`}>
+          <CardContent className='p-4'>
+            <div className='mb-4'>
+              {post.imageUrl ? (
+                <Image
+                  src={post.imageUrl}
+                  width={500}
+                  height={500}
+                  alt='Picture of the author'
+                  className='rounded-lg'
+                />
+              ) : (
+                <Mesh height={200} />
+              )}
+            </div>
+
+            <CardTitle>{post.title}</CardTitle>
+
+            <CardDescription className='mt-2'>
+              {excerpt !== undefined ? excerpt : ''}
+            </CardDescription>
+          </CardContent>
+        </Link>
+      </div>
+
+      <CardFooter className='flex justify-between p-4 '>
         <div className='flex items-center gap-1'>
-          <Button variant='outline' className='rounded-full gap-1'>
-            <p>{'🔥'}</p>
+          <Button variant='outline' size='sm' className='rounded-full gap-1'>
+            <p className=' text-gray-400 '>{'🔥'}</p>
             <p>22</p>
           </Button>
-          <Button variant='outline' className='rounded-full gap-1'>
+          <Button variant='outline' size='sm' className='rounded-full gap-1'>
             <MessageCircle className='w-5 h-5' />
             <p>8</p>
           </Button>
-          <Button variant='outline' className='rounded-full gap-1'>
+          <Button variant='outline' size='sm' className='rounded-full gap-1'>
             <Bookmark className='w-5 h-5' />
             <p>96</p>
           </Button>
         </div>
-        <Button variant='outline' className='rounded-full'>
+        <Button variant='outline' size='sm' className='rounded-full'>
           <Send className='w-5 h-5' />
         </Button>
       </CardFooter>

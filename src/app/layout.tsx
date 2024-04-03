@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import '@mantine/core/styles.css';
 import { SearchCommand } from '@/components/search';
+import { EdgeStoreProvider } from '@/lib/edgestore';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -38,18 +39,20 @@ export default function RootLayout({
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className}>
         <ClerkProvider>
-          <ThemeProvider
-            enableSystem
-            attribute='class'
-            defaultTheme='system'
-            storageKey='qalam-theme'
-            disableTransitionOnChange
-          >
-            <Header />
-            <SearchCommand />
-            <main className='h-full w-full pt-20'>{children}</main>
-            <Toaster position='top-center' />
-          </ThemeProvider>
+          <EdgeStoreProvider>
+            <ThemeProvider
+              enableSystem
+              attribute='class'
+              defaultTheme='system'
+              storageKey='qalam-theme'
+              disableTransitionOnChange
+            >
+              <Header />
+              <SearchCommand />
+              <main className='h-full w-full pt-20'>{children}</main>
+              <Toaster position='top-center' />
+            </ThemeProvider>
+          </EdgeStoreProvider>
         </ClerkProvider>
       </body>
     </html>

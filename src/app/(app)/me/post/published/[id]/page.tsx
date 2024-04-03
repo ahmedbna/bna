@@ -23,8 +23,8 @@ interface Props {
 
 export default function Draft({ params }: Props) {
   const { user } = useUser();
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
@@ -32,16 +32,9 @@ export default function Draft({ params }: Props) {
   );
 
   const update = useMutation(api.posts.update);
-  const post = useQuery(api.posts.getMyDraftById, {
+  const post = useQuery(api.posts.getMyPublishById, {
     postId: params.id,
   });
-
-  const handleChangeContent = (content: Array<Block>) => {
-    update({
-      id: params.id,
-      content,
-    });
-  };
 
   if (post === undefined) {
     return (
@@ -58,60 +51,46 @@ export default function Draft({ params }: Props) {
     return redirect('/');
   }
 
-  const handlePublishPost = () => {
+  const handleDraftPost = () => {
     setLoading(true);
 
     const promise = update({
       id: params.id,
-      isPublished: true,
+      isPublished: false,
     });
 
     toast.promise(promise, {
-      loading: 'Publishing post...',
-      success: 'Post Published!',
+      loading: 'Drafting post...',
+      success: 'Post Drafted!',
       error: 'Something went wrong',
     });
 
     promise
       .then((postId) => {
-        if (postId) router.push(`/me/post/published/${postId}`);
+        if (postId) router.push(`/me/post/draft/${postId}`);
       })
       .finally(() => {
         setLoading(false);
       });
   };
 
-  const handleDeletePost = () => {};
-
   return (
     <div>
-      <PostAuthor post={post} />
+      <PostAuthor isDraft={true} post={post} />
 
       <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative'>
         <PostHeader isDraft={true} post={post} />
-        <Editor
-          initialContent={post.content || initialContent}
-          handleChangeContent={handleChangeContent}
-        />
+        <Editor initialContent={post.content || initialContent} />
 
-        <div className='w-full flex items-center gap-4 p-6'>
-          <Button
-            className='w-full'
-            size='lg'
-            variant='destructive'
-            disabled={loading}
-            onClick={handleDeletePost}
-          >
-            {loading ? <Spinner /> : 'Delete'}
-          </Button>
+        <div className='w-full flex items-center  p-6'>
           <Button
             className='w-full'
             size='lg'
             variant='default'
             disabled={loading}
-            onClick={handlePublishPost}
+            onClick={handleDraftPost}
           >
-            {loading ? <Spinner /> : 'Publish'}
+            {loading ? <Spinner /> : 'Draft'}
           </Button>
         </div>
       </div>

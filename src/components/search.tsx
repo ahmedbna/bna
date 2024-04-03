@@ -5,6 +5,7 @@ import { useQuery } from 'convex/react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/clerk-react';
 import { useSearch } from '@/hooks/use-search';
+import { useDebounce } from 'use-debounce';
 import {
   CommandDialog,
   CommandEmpty,
@@ -18,16 +19,18 @@ import { api } from '../../convex/_generated/api';
 export const SearchCommand = () => {
   const router = useRouter();
   const { user } = useUser();
-  const posts = useQuery(api.posts.searchPosts, {
-    query: 'Search query',
-  });
 
-  const [isMounted, setIsMounted] = useState(false);
+  const [query, setQuery] = useState('');
+  const [search] = useDebounce(query, 500);
+  const posts = useQuery(api.posts.searchPosts, {
+    query: search,
+  });
 
   const open = useSearch((store) => store.isOpen);
   const toggle = useSearch((store) => store.toggle);
   const onClose = useSearch((store) => store.onClose);
 
+  const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -62,23 +65,22 @@ export const SearchCommand = () => {
         </kbd>
       </p> */}
       <CommandDialog open={open} onOpenChange={onClose}>
-        <CommandInput placeholder='Type to search posts...' />
+        <CommandInput
+          placeholder='Type to search posts...'
+          onValueChange={(query) => setQuery(query)}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading='Suggestions'>
+          <CommandGroup heading='Suggested Posts'>
             {posts?.map((post) => (
               <CommandItem
                 key={post._id}
-                value={`${post._id}-${post.title}`}
                 title={post.title}
+                value={`${post._id}-${post.title}`}
                 onSelect={() => onSelect(post._id)}
+                className='cursor-pointer'
               >
-                {/* {post.icon ? (
-                  <p className='mr-2 text-[18px]'>{post.icon}</p>
-                ) : (
-                  <File className='mr-2 h-4 w-4' />
-                )} */}
-                <span>{post.title}</span>
+                {post.title}
               </CommandItem>
             ))}
           </CommandGroup>

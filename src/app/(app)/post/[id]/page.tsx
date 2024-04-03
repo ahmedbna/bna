@@ -1,5 +1,20 @@
+'use client';
+
 import { PostPage } from '@/components/post';
+import PostAuthor from '@/components/post/post-author';
+import PostHeader from '@/components/post/post-header';
+import { Spinner } from '@/components/spinner';
+import { Button } from '@/components/ui/button';
+import { initialContent } from '@/lib/initial-content';
+import { useUser } from '@clerk/clerk-react';
+import { useMutation, useQuery } from 'convex/react';
 import { Metadata, ResolvingMetadata } from 'next';
+import dynamic from 'next/dynamic';
+import { redirect, useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { api } from '../../../../../convex/_generated/api';
+import { toast } from 'sonner';
+import { Id } from '../../../../../convex/_generated/dataModel';
 
 // type Props = {
 //   params: { id: string };
@@ -51,10 +66,85 @@ import { Metadata, ResolvingMetadata } from 'next';
 //   };
 // }
 
-export default function Post({ params }: { params: { id: string } }) {
+interface Props {
+  params: {
+    id: Id<'posts'>;
+  };
+}
+
+export default function Post({ params }: Props) {
+  const router = useRouter();
+
+  const Editor = useMemo(
+    () => dynamic(() => import('@/components/editor'), { ssr: false }),
+    []
+  );
+
+  const post = useQuery(api.posts.getPostById, {
+    postId: params.id,
+  });
+
+  if (post === undefined) {
+    return (
+      <div className='h-full flex items-center justify-center'>
+        <Spinner size='lg' />
+      </div>
+    );
+  }
+  if (post === null) {
+    return <div>Not found</div>;
+  }
+
+  // const handleDraftPost = () => {
+  //   setLoading(true);
+
+  //   const promise = update({
+  //     id: params.id,
+  //     isPublished: false,
+  //   });
+
+  //   toast.promise(promise, {
+  //     loading: 'Drafting post...',
+  //     success: 'Post Drafted!',
+  //     error: 'Something went wrong',
+  //   });
+
+  //   promise
+  //     .then((postId) => {
+  //       if (postId) router.push(`/me/post/draft/${postId}`);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
+
+  console.log(post);
+
   return (
-    <div className='h-full'>
-      <PostPage />
+    <div>
+      <PostAuthor post={post} />
+
+      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative'>
+        <PostHeader isDraft={false} post={post} />
+
+        <Editor
+          editable={false}
+          initialContent={post.content || initialContent}
+          handleChangeContent={() => null}
+        />
+
+        {/* <div className='w-full flex items-center  p-6'>
+          <Button
+            className='w-full'
+            size='lg'
+            variant='default'
+            disabled={loading}
+            onClick={handleDraftPost}
+          >
+            {loading ? <Spinner /> : 'Draft'}
+          </Button>
+        </div> */}
+      </div>
     </div>
   );
 }

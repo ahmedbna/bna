@@ -10,6 +10,7 @@ import { Spinner } from '../spinner';
 import { SignInButton } from '@clerk/clerk-react';
 
 export const NewPost = () => {
+  const router = useRouter();
   const { isLoading, isAuthenticated } = useConvexAuth();
 
   if (isLoading) {
@@ -20,15 +21,13 @@ export const NewPost = () => {
     );
   }
 
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-
   const create = useMutation(api.posts.create);
+  const [loading, setLoading] = useState(false);
 
   const handleCreateNewPost = () => {
     setLoading(true);
 
-    const response = create({ title: 'Title here...' });
+    const response = create({ title: 'Click to Edit Title...' });
 
     toast.promise(response, {
       loading: 'Creating post...',

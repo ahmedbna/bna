@@ -1,31 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { Block, PartialBlock } from '@blocknote/core';
+import { Block } from '@blocknote/core';
 import { BlockNoteView, useCreateBlockNote } from '@blocknote/react';
 import '@blocknote/core/style.css';
 import '@blocknote/react/style.css';
 import '@blocknote/core/fonts/inter.css';
 import { useTheme } from 'next-themes';
 
+import { useEdgeStore } from '@/lib/edgestore';
+
 type EditorProps = {
-  handleChangeContent: (value: string) => void;
-  initialContent?: string;
   editable?: boolean;
+  initialContent?: Array<Block>;
+  handleChangeContent: (value: Array<Block>) => void;
 };
 
-export const Editor = ({
-  handleChangeContent,
-  initialContent,
+const Editor = ({
   editable = true,
+  initialContent,
+  handleChangeContent,
 }: EditorProps) => {
   const { resolvedTheme } = useTheme();
-  const [blocks, setBlocks] = useState<Block[]>([]);
+  const { edgestore } = useEdgeStore();
+
+  const handleUploadImage = async (file: File) => {
+    const response = await edgestore.publicFiles.upload({ file });
+    return response.url;
+  };
 
   const editor = useCreateBlockNote({
-    initialContent: initialContent
-      ? (JSON.parse(initialContent) as PartialBlock[])
-      : undefined,
+    initialContent: initialContent ? initialContent : undefined,
+    uploadFile: handleUploadImage,
   });
 
   return (
@@ -34,11 +39,11 @@ export const Editor = ({
       editable={editable}
       theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
       onChange={() => {
-        // Saves the document JSON to state.
-        setBlocks(editor.document);
-        handleChangeContent(JSON.stringify(editor.document, null, 2));
+        handleChangeContent(editor.document);
       }}
       className='w-full h-full flex flex-col '
     />
   );
 };
+
+export default Editor;

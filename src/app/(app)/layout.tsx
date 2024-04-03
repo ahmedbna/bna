@@ -1,17 +1,29 @@
 'use client';
 
-import { Spinner } from '@/components/spinner';
-import { useConvexAuth } from 'convex/react';
 import { redirect } from 'next/navigation';
+import { useConvexAuth } from 'convex/react';
+import { Spinner } from '@/components/spinner';
+import useStoreUserEffect from '@/lib/useStoreUserEffect';
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userId = useStoreUserEffect();
   const { isLoading, isAuthenticated } = useConvexAuth();
 
+  if (userId === null) {
+    // Storing User
+    return (
+      <div className='h-full flex items-center justify-center'>
+        <Spinner size='lg' />
+      </div>
+    );
+  }
+
   if (isLoading) {
+    // Loading User
     return (
       <div className='h-full flex items-center justify-center'>
         <Spinner size='lg' />

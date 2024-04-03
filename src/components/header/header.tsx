@@ -9,13 +9,13 @@ import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { Spinner } from '@/components/spinner';
 import { useSearch } from '@/hooks/use-search';
 import { Search } from 'lucide-react';
+import { AvatarImage, Avatar, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 
 export const Header = () => {
   const search = useSearch();
   const { isLoading, isAuthenticated } = useConvexAuth();
   const { user } = useUser();
-
-  // console.log(user);
 
   return (
     <div
@@ -39,12 +39,15 @@ export const Header = () => {
           </>
         )}
         {!isLoading && isAuthenticated && (
-          <>
-            {/* <Button variant='ghost' size='sm' asChild>
-              <Link href='/documents'>Qalam</Link>
-            </Button> */}
-            <UserButton afterSignOutUrl='/' />
-          </>
+          <Link href='/me'>
+            <Avatar className='h-8 w-8'>
+              <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
+              <AvatarFallback>
+                {user?.firstName?.charAt(0)}
+                {user?.lastName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
         )}
       </div>
     </div>

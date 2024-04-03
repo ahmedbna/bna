@@ -1,5 +1,7 @@
 'use client';
 
+import Mesh from '../mesh';
+
 // type Props = {
 //   post: any;
 // };
@@ -7,7 +9,7 @@
 export const PostPage = () => {
   return (
     <div className='h-full flex flex-col items-center gap-8'>
-      <h1>{'post.title'}</h1>
+      <Mesh />
     </div>
   );
 };
