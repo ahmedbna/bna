@@ -51,8 +51,16 @@ export const NewPost = () => {
           <Button>New Post</Button>
         </SignInButton>
       ) : (
-        <Button onClick={handleCreateNewPost}>
-          {loading ? <Spinner /> : 'New Post'}
+        <Button
+          variant='default'
+          className='w-full'
+          onClick={handleCreateNewPost}
+        >
+          {loading ? (
+            <Spinner />
+          ) : (
+            <p className='text-lg font-semibold tracking-tight'>New Post</p>
+          )}
         </Button>
       )}
     </>

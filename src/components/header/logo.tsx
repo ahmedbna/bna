@@ -19,7 +19,7 @@ export const Logo = () => {
         className="hidden dark:block"
       /> */}
       <p className='text-2xl'>{'🔥'}</p>
-      <p className='text-xl font-bold'>Qalam</p>
+      <p className='text-2xl font-black '>BNA</p>
     </Link>
   );
 };

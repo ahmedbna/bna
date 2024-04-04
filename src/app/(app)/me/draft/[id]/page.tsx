@@ -93,7 +93,7 @@ export default function Draft({ params }: Props) {
     <div>
       <PostAuthor post={post} />
 
-      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative'>
+      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative mx-[-16px] lg:mx-[-32px]'>
         <PostHeader isDraft={true} post={post} />
         <Editor
           initialContent={post.content || initialContent}

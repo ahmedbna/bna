@@ -1,18 +1,24 @@
 'use client';
 
-import { Block } from '@blocknote/core';
-import { BlockNoteView, useCreateBlockNote } from '@blocknote/react';
+import { useTheme } from 'next-themes';
+import { Block, filterSuggestionItems } from '@blocknote/core';
+import {
+  BlockNoteView,
+  useCreateBlockNote,
+  SuggestionMenuController,
+} from '@blocknote/react';
 import '@blocknote/core/style.css';
 import '@blocknote/react/style.css';
 import '@blocknote/core/fonts/inter.css';
-import { useTheme } from 'next-themes';
 
 import { useEdgeStore } from '@/lib/edgestore';
+import { getCustomSlashMenuItems } from './slash-menu-items';
+import { schema } from './schema';
 
 type EditorProps = {
   editable?: boolean;
   initialContent?: Array<Block>;
-  handleChangeContent: (value: Array<Block>) => void;
+  handleChangeContent: (value: Array<typeof schema.Block>) => void;
 };
 
 const Editor = ({
@@ -29,20 +35,32 @@ const Editor = ({
   };
 
   const editor = useCreateBlockNote({
+    schema,
     initialContent: initialContent ? initialContent : undefined,
     uploadFile: handleUploadImage,
   });
 
   return (
     <BlockNoteView
+      imageToolbar
+      linkToolbar
       editor={editor}
       editable={editable}
       theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+      slashMenu={false}
       onChange={() => {
         handleChangeContent(editor.document);
       }}
       className='w-full h-full flex flex-col '
-    />
+    >
+      <SuggestionMenuController
+        triggerCharacter={'/'}
+        // Replaces the default Slash Menu items with our custom ones.
+        getItems={async (query) =>
+          filterSuggestionItems(getCustomSlashMenuItems(editor), query)
+        }
+      />
+    </BlockNoteView>
   );
 };
 

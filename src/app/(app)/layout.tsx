@@ -35,7 +35,5 @@ export default function RootLayout({
     return redirect('/login');
   }
 
-  return (
-    <div className='h-full md:max-w-5xl lg:max-w-6xl mx-auto'>{children}</div>
-  );
+  return <div>{children}</div>;
 }

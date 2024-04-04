@@ -61,7 +61,9 @@ export default function Account() {
         <TabsList className='mb-4'>
           <TabsTrigger value='published'>Published</TabsTrigger>
           <TabsTrigger value='draft'>Draft</TabsTrigger>
-          <TabsTrigger value='saved'>Saved</TabsTrigger>
+          <TabsTrigger value='saved' disabled>
+            Saved
+          </TabsTrigger>
         </TabsList>
         <TabsContent value='published'>
           <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>

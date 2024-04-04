@@ -24,7 +24,7 @@ export const Header = () => {
       )}
     >
       <Logo />
-      <div className='md:ml-auto md:justify-end justify-between w-full flex items-center gap-x-2'>
+      <div className='ml-auto justify-end  w-full flex items-center gap-x-2'>
         <Button variant='ghost' size='icon' onClick={search.toggle}>
           <Search className='h-[1.2rem] w-[1.2rem]' />
           <span className='sr-only'>Search Posts</span>

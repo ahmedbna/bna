@@ -14,6 +14,7 @@ export default defineSchema({
     userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
+    .index('by_publised', ['isPublished'])
     .searchIndex('search_title', {
       searchField: 'title',
     }),

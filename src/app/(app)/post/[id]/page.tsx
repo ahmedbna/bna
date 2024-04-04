@@ -126,7 +126,7 @@ export default function Post({ params }: Props) {
     <div>
       <PostAuthor post={post} />
 
-      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative'>
+      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative mx-[-16px] lg:mx-[-32px]'>
         <PostHeader isDraft={false} post={post} />
 
         <Editor
@@ -136,9 +136,9 @@ export default function Post({ params }: Props) {
         />
 
         {user?.id === post.userId ? (
-          <div className='w-full flex items-center p-6'>
+          <div className='w-full flex items-center justify-end p-6'>
             <Button
-              className='w-full'
+              // className='w-full'
               size='lg'
               variant='default'
               disabled={loading}

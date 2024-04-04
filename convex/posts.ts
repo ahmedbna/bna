@@ -5,7 +5,10 @@ import randomColor from 'randomcolor';
 
 export const get = query({
   handler: async (ctx) => {
-    const posts = await ctx.db.query('posts').collect();
+    const posts = await ctx.db
+      .query('posts')
+      .withIndex('by_publised', (q) => q.eq('isPublished', true))
+      .collect();
 
     return await asyncMap(posts, async (post) => {
       const coverUrl = post.coverImage

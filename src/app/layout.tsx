@@ -8,11 +8,12 @@ import '@/styles/globals.css';
 import '@mantine/core/styles.css';
 import { SearchCommand } from '@/components/search';
 import { EdgeStoreProvider } from '@/lib/edgestore';
+import { Sidebar } from '@/components/sidebar';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Qalam',
+  title: 'BNA',
   description: 'Connecting Minds',
   // icons: {
   //   icon: [
@@ -44,12 +45,22 @@ export default function RootLayout({
               enableSystem
               attribute='class'
               defaultTheme='system'
-              storageKey='qalam-theme'
+              storageKey='bna-theme'
               disableTransitionOnChange
             >
               <Header />
               <SearchCommand />
-              <main className='h-full w-full pt-20'>{children}</main>
+
+              <div className='grid lg:grid-cols-5'>
+                <Sidebar />
+                {/* <Sidebar className='hidden md:block' /> */}
+                <div className='col-span-3 lg:col-span-4 '>
+                  <div className='h-full px-4 py-6 lg:px-8'>
+                    <main className='h-full w-full pt-12'>{children}</main>
+                  </div>
+                </div>
+              </div>
+
               <Toaster position='top-center' />
             </ThemeProvider>
           </EdgeStoreProvider>
