@@ -15,6 +15,7 @@ import PostAuthor from '@/components/post/post-author';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Alert } from '@/components/ui/alert';
+import { LinkPreview } from '@/components/editor/link/link-preview';
 
 interface Props {
   params: {

@@ -8,6 +8,7 @@ import { CodeBlock } from './code';
 import { AlertBlock } from './alert';
 import { EmojiBlock } from './emoji';
 import { CheckboxBlock } from './checkbox';
+import { LinkPreviewBlock } from './link';
 
 export const schema = BlockNoteSchema.create({
   blockSpecs: {
@@ -20,6 +21,7 @@ export const schema = BlockNoteSchema.create({
     alert: AlertBlock,
     emoji: EmojiBlock,
     checkbox: CheckboxBlock,
+    linkPreview: LinkPreviewBlock,
   },
   inlineContentSpecs: {
     // enable the default inline content if desired

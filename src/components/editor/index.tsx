@@ -51,7 +51,7 @@ const Editor = ({
       onChange={() => {
         handleChangeContent(editor.document);
       }}
-      className='w-full h-full flex flex-col '
+      className='w-full h-full flex flex-col pb-96 '
     >
       <SuggestionMenuController
         triggerCharacter={'/'}
