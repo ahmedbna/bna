@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import PostAuthor from '@/components/post/post-author';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { Alert } from '@/components/ui/alert';
 
 interface Props {
   params: {
@@ -23,8 +24,6 @@ interface Props {
 
 export default function Draft({ params }: Props) {
   const { user } = useUser();
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
@@ -64,62 +63,24 @@ export default function Draft({ params }: Props) {
     return redirect('/');
   }
 
-  const handlePublishPost = () => {
-    setLoading(true);
-
-    const promise = update({
-      id: params.id,
-      isPublished: true,
-    });
-
-    toast.promise(promise, {
-      loading: 'Publishing post...',
-      success: 'Post Published!',
-      error: 'Something went wrong',
-    });
-
-    promise
-      .then((postId) => {
-        if (postId) router.push(`/post/${postId}`);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  const handleDeletePost = () => {};
-
   return (
     <div>
-      <PostAuthor post={post} />
+      {/* <PostAuthor post={post} /> */}
 
-      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative mx-[-16px] lg:mx-[-32px]'>
+      <div className='dark:bg-[#1f1f1f] min-h-screen flex flex-col gap-4 relative'>
         <PostHeader isDraft={true} post={post} />
+
         <Editor
           initialContent={post.content || initialContent}
           handleChangeContent={handleChangeContent}
         />
 
-        <div className='w-full flex items-center gap-4 p-6 pt-24'>
-          <Button
-            className='w-full'
-            size='lg'
-            variant='destructive'
-            disabled={loading}
-            onClick={handleDeletePost}
-          >
-            {loading ? <Spinner /> : 'Delete'}
-          </Button>
-
-          <Button
-            className='w-full'
-            size='lg'
-            variant='default'
-            disabled={loading}
-            onClick={handlePublishPost}
-          >
-            {loading ? <Spinner /> : 'Publish'}
-          </Button>
+        <div className='fixed bottom-0 right-0 flex justify-center mr-2 mb-2'>
+          <div className='w-full max-w-[800px]'>
+            <Alert>
+              <PostAuthor post={post} />
+            </Alert>
+          </div>
         </div>
       </div>
     </div>

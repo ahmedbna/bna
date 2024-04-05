@@ -5,10 +5,11 @@ import { useEffect, useRef } from 'react';
 type Props = {
   color1: string;
   color2: string;
+  className?: string;
   height?: number;
 };
 
-const Gradient = ({ color1, color2, height = 200 }: Props) => {
+const Gradient = ({ color1, color2, height = 200, className }: Props) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -35,11 +36,7 @@ const Gradient = ({ color1, color2, height = 200 }: Props) => {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      height={height}
-      className='rounded-lg shadow'
-    ></canvas>
+    <canvas ref={canvasRef} height={height} className={className}></canvas>
   );
 };
 

@@ -1,19 +1,15 @@
 'use client';
 
+import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import PostAuthor from '@/components/post/post-author';
 import PostHeader from '@/components/post/post-header';
 import { Spinner } from '@/components/spinner';
-import { Button } from '@/components/ui/button';
 import { initialContent } from '@/lib/initial-content';
-import { useUser } from '@clerk/clerk-react';
-import { useMutation, useQuery } from 'convex/react';
-import { Metadata, ResolvingMetadata } from 'next';
-import dynamic from 'next/dynamic';
-import { redirect, useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useQuery } from 'convex/react';
 import { api } from '../../../../../convex/_generated/api';
-import { toast } from 'sonner';
 import { Id } from '../../../../../convex/_generated/dataModel';
+import { Alert } from '@/components/ui/alert';
 
 // type Props = {
 //   params: { id: string };
@@ -72,16 +68,11 @@ interface Props {
 }
 
 export default function Post({ params }: Props) {
-  const router = useRouter();
-  const { user } = useUser();
-  const [loading, setLoading] = useState(false);
-
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
     []
   );
 
-  const update = useMutation(api.posts.update);
   const post = useQuery(api.posts.getPostById, {
     postId: params.id,
   });
@@ -97,57 +88,22 @@ export default function Post({ params }: Props) {
     return <div>Not found</div>;
   }
 
-  const handleDraftPost = () => {
-    if (user?.id !== post.userId) return;
-
-    setLoading(true);
-
-    const promise = update({
-      id: params.id,
-      isPublished: false,
-    });
-
-    toast.promise(promise, {
-      loading: 'Drafting post...',
-      success: 'Post Drafted!',
-      error: 'Something went wrong',
-    });
-
-    promise
-      .then((postId) => {
-        if (postId) router.push(`/me/draft/${postId}`);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
   return (
-    <div>
-      <PostAuthor post={post} />
+    <div className='w-full dark:bg-[#1f1f1f] min-h-screen flex flex-col gap-4 relative'>
+      <PostHeader isDraft={false} post={post} />
 
-      <div className='dark:bg-[#1f1f1f] min-h-full flex flex-col gap-4 relative mx-[-16px] lg:mx-[-32px]'>
-        <PostHeader isDraft={false} post={post} />
+      <Editor
+        editable={false}
+        initialContent={post.content || initialContent}
+        handleChangeContent={() => null}
+      />
 
-        <Editor
-          editable={false}
-          initialContent={post.content || initialContent}
-          handleChangeContent={() => null}
-        />
-
-        {user?.id === post.userId ? (
-          <div className='w-full flex items-center justify-end p-6'>
-            <Button
-              // className='w-full'
-              size='lg'
-              variant='default'
-              disabled={loading}
-              onClick={handleDraftPost}
-            >
-              {loading ? <Spinner /> : 'Draft Post'}
-            </Button>
-          </div>
-        ) : null}
+      <div className='fixed bottom-0 right-0 flex justify-center mr-2 mb-2'>
+        <div className='w-full max-w-[800px]'>
+          <Alert>
+            <PostAuthor post={post} />
+          </Alert>
+        </div>
       </div>
     </div>
   );

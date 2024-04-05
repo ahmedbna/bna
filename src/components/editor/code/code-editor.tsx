@@ -4,18 +4,13 @@ import dynamic from 'next/dynamic';
 import '@uiw/react-textarea-code-editor/dist.css';
 import { useTheme } from 'next-themes';
 import { SelectLanguage } from './select-language';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import './styles.css';
 
 import { Fira_Code } from 'next/font/google';
 import { cn } from '@/lib/utils';
 const fira = Fira_Code({ subsets: ['latin'] });
-
-const CodeTextAeaEditor = dynamic(
-  () => import('@uiw/react-textarea-code-editor').then((mod) => mod.default),
-  { ssr: false }
-);
 
 type Props = {
   ref?: any;
@@ -34,6 +29,16 @@ export const CodeEditor = ({
 }: Props) => {
   const { resolvedTheme } = useTheme();
   const [copied, setCopied] = useState(false);
+
+  const CodeTextAeaEditor = useMemo(
+    () =>
+      dynamic(
+        () =>
+          import('@uiw/react-textarea-code-editor').then((mod) => mod.default),
+        { ssr: false }
+      ),
+    []
+  );
 
   return (
     <div className={cn(fira.className, 'w-full')}>

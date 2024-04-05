@@ -9,7 +9,7 @@ export default function Home() {
   const posts = useQuery(api.posts.get);
 
   return (
-    <div className='h-full flex flex-col gap-8'>
+    <div className='h-full flex flex-col gap-8 py-14 px-8'>
       <p className='font-bold text-4xl'>For you</p>
 
       {/* <CodeEditor /> */}

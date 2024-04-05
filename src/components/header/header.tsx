@@ -20,16 +20,17 @@ export const Header = () => {
   return (
     <div
       className={cn(
-        'z-50 bg-background fixed top-0 flex items-center w-full px-6 py-2.5 border-b shadow-sm'
+        'z-50 bg-background flex items-center w-full pl-6 pr-2 py-2.5 border-b shadow-sm'
       )}
     >
       <Logo />
-      <div className='ml-auto justify-end  w-full flex items-center gap-x-2'>
+      <div className='ml-auto justify-end w-full flex items-center'>
         <Button variant='ghost' size='icon' onClick={search.toggle}>
           <Search className='h-[1.2rem] w-[1.2rem]' />
           <span className='sr-only'>Search Posts</span>
         </Button>
         <ModeToggle />
+
         {isLoading && <Spinner />}
         {!isLoading && !isAuthenticated && (
           <>
@@ -40,7 +41,7 @@ export const Header = () => {
         )}
         {!isLoading && isAuthenticated && (
           <Link href='/me'>
-            <Avatar className='h-8 w-8'>
+            <Avatar className='h-6 w-6 ml-2'>
               <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
               <AvatarFallback>
                 {user?.firstName?.charAt(0)}

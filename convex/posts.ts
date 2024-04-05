@@ -8,6 +8,7 @@ export const get = query({
     const posts = await ctx.db
       .query('posts')
       .withIndex('by_publised', (q) => q.eq('isPublished', true))
+      .order('desc')
       .collect();
 
     return await asyncMap(posts, async (post) => {
@@ -41,6 +42,7 @@ export const getMyPosts = query({
     const posts = await ctx.db
       .query('posts')
       .withIndex('by_userId', (q) => q.eq('userId', userId))
+      .order('desc')
       .collect();
 
     return await asyncMap(posts, async (post) => {

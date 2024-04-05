@@ -34,7 +34,7 @@ export const PostCard = ({ post }: Props) => {
           <div className='flex items-center justify-between'>
             <Link
               href={`${
-                post.userId === user?.id ? `/me` : `/user/${post.userId}`
+                post.userId === user?.id ? `/me` : `/profile/${post.userId}`
               }`}
               className='flex items-center'
             >
@@ -78,18 +78,21 @@ export const PostCard = ({ post }: Props) => {
                   width={500}
                   height={500}
                   alt='Picture of the author'
-                  className='rounded-lg max-h-[210px]'
+                  className='rounded-lg max-h-[210px] shadow-sm'
                 />
               ) : (
                 <Gradient
                   color1={post.color1}
                   color2={post.color2}
                   height={200}
+                  className='rounded-lg shadow-sm'
                 />
               )}
             </div>
 
-            <CardTitle>{post.title}</CardTitle>
+            <CardTitle className='text-lg font-bold tracking-tight'>
+              {post.title}
+            </CardTitle>
 
             <CardDescription className='mt-2'>
               {excerpt !== undefined ? excerpt : ''}

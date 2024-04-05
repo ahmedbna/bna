@@ -53,7 +53,7 @@ export default function PostHeader({ isDraft = false, post }: Props) {
       {isDraft && post.imageUrl === undefined ? (
         <UploadImage postId={post._id} />
       ) : !post.imageUrl ? (
-        <Gradient color1={post.color1} color2={post.color2} height={120} />
+        <Gradient color1={post.color1} color2={post.color2} height={110} />
       ) : (
         <Image
           src={post.imageUrl!}

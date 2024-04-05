@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Spinner } from '../spinner';
 import { SignInButton } from '@clerk/clerk-react';
+import { PencilLine } from 'lucide-react';
 
 export const NewPost = () => {
   const router = useRouter();
@@ -59,7 +60,10 @@ export const NewPost = () => {
           {loading ? (
             <Spinner />
           ) : (
-            <p className='text-lg font-semibold tracking-tight'>New Post</p>
+            <p className='flex items-center justify-center text-md font-bold tracking-tight'>
+              New Post
+              <PencilLine className='w-4 h-4 ml-2' />
+            </p>
           )}
         </Button>
       )}

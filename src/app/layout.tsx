@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ClerkProvider } from '@/providers/clerk-provider';
-import { Header } from '@/components/header/header';
 import { Toaster } from '@/components/ui/sonner';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
@@ -9,6 +8,11 @@ import '@mantine/core/styles.css';
 import { SearchCommand } from '@/components/search';
 import { EdgeStoreProvider } from '@/lib/edgestore';
 import { Sidebar } from '@/components/sidebar';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -48,18 +52,21 @@ export default function RootLayout({
               storageKey='bna-theme'
               disableTransitionOnChange
             >
-              <Header />
               <SearchCommand />
 
-              <div className='grid lg:grid-cols-5'>
-                <Sidebar />
-                {/* <Sidebar className='hidden md:block' /> */}
-                <div className='col-span-3 lg:col-span-4 '>
-                  <div className='h-full px-4 py-6 lg:px-8'>
-                    <main className='h-full w-full pt-12'>{children}</main>
+              <ResizablePanelGroup direction='horizontal'>
+                <ResizablePanel defaultSize={20}>
+                  <Sidebar />
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel>
+                  <div className='flex h-full items-center justify-center'>
+                    <main className='h-full w-full overflow-y-auto'>
+                      {children}
+                    </main>
                   </div>
-                </div>
-              </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
 
               <Toaster position='top-center' />
             </ThemeProvider>
