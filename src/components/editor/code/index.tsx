@@ -13,16 +13,19 @@ export const CodeBlock = createReactBlockSpec(
         default: 'javascript',
       },
       codeString: {
-        default: ``,
+        default: '',
       },
     },
   },
   {
     render: (props) => {
+      // props.editor.addStyles({ font: 'Fira Code, monospace' });
+
       return (
         <div className=' w-full flex items-center justify-center flex-grow'>
           <CodeEditor
             ref={props.contentRef}
+            editable={props.editor.isEditable}
             codeString={props.block.props.codeString}
             language={props.block.props.codeLanguage}
             setCodeString={(code) =>

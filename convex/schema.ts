@@ -7,7 +7,7 @@ export default defineSchema({
     title: v.string(),
     color1: v.string(),
     color2: v.string(),
-    content: v.optional(v.array(v.any())),
+    content: v.optional(v.string()),
     imageUrl: v.optional(v.string()),
     coverImage: v.optional(v.id('_storage')),
     isPublished: v.boolean(),

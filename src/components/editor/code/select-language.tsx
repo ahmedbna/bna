@@ -9,6 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
+import { Fira_Code } from 'next/font/google';
+const fira = Fira_Code({ subsets: ['latin'] });
 
 type Props = {
   selectedLanguage: string;
@@ -25,14 +28,21 @@ export function SelectLanguage({
       defaultValue='javascript'
       value={selectedLanguage}
     >
-      <SelectTrigger className='w-[180px] '>
-        <SelectValue placeholder='Select a language' />
+      <SelectTrigger className={cn(fira.className, 'w-[180px]')}>
+        <SelectValue
+          placeholder='Select a language'
+          className={cn(fira.className)}
+        />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Languages</SelectLabel>
+          <SelectLabel className={cn(fira.className)}>Languages</SelectLabel>
           {LANGUAGES.map((language) => (
-            <SelectItem key={language.value} value={language.value}>
+            <SelectItem
+              key={language.value}
+              value={language.value}
+              className={cn(fira.className)}
+            >
               {language.name}
             </SelectItem>
           ))}

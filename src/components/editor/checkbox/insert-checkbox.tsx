@@ -11,7 +11,7 @@ export const insertCheckbox = (editor: typeof schema.BlockNoteEditor) => ({
     });
   },
   aliases: ['checbox', 'check', 'box'],
-  group: 'Other',
+  group: 'More',
   icon: <SquareCheck className='w-6 h-6 p-1' />,
   subtext: 'Insert checkbox into your post.',
 });

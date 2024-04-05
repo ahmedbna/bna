@@ -37,7 +37,7 @@ export default function Draft({ params }: Props) {
     postId: params.id,
   });
 
-  const handleChangeContent = (content: Array<Block>) => {
+  const handleChangeContent = (content: string) => {
     update({
       id: params.id,
       content,
@@ -72,7 +72,7 @@ export default function Draft({ params }: Props) {
         <PostHeader isDraft={true} post={post} />
 
         <Editor
-          initialContent={post.content || initialContent}
+          initialContent={post.content || JSON.stringify(initialContent)}
           handleChangeContent={handleChangeContent}
         />
 

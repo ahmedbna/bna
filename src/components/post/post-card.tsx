@@ -16,6 +16,7 @@ import { Doc } from '../../../convex/_generated/dataModel';
 import Gradient from '../gradient';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useUser } from '@clerk/clerk-react';
+import { Block, PartialBlock } from '@blocknote/core';
 
 type Props = {
   post: Doc<'posts'>;
@@ -23,8 +24,10 @@ type Props = {
 
 export const PostCard = ({ post }: Props) => {
   const { user } = useUser();
-  const excerpt = post.content?.filter(
-    (block) => block.type === 'paragraph' && block.content?.length
+
+  const content = JSON.parse(post.content || '[]');
+  const excerpt = content.filter(
+    (block: Block) => block.type === 'paragraph' && block.content?.length
   )[0]?.content?.[0]?.text;
 
   return (

@@ -19,7 +19,7 @@ export const insertAlert = (editor: typeof schema.BlockNoteEditor) => ({
     'info',
     'success',
   ],
-  group: 'Other',
+  group: 'More',
   icon: <AlertCircle className='w-6 h-6 p-1' />,
   subtext: 'Insert an alart into your post.',
 });

@@ -19,6 +19,7 @@ export const CalendarBlock = createReactBlockSpec(
       return (
         <div className='flex items-center justify-center flex-grow gap-2'>
           <Calendar
+            disabled={!props.editor.isEditable}
             mode='single'
             selected={new Date(props.block.props.date)}
             onSelect={(date) =>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { Block, filterSuggestionItems } from '@blocknote/core';
+import { Block, filterSuggestionItems, PartialBlock } from '@blocknote/core';
 import {
   BlockNoteView,
   useCreateBlockNote,
@@ -14,11 +14,12 @@ import '@blocknote/core/fonts/inter.css';
 import { useEdgeStore } from '@/lib/edgestore';
 import { getCustomSlashMenuItems } from './slash-menu-items';
 import { schema } from './schema';
+import { getMentionMenuItems } from './mention/getMentionMenuItems';
 
 type EditorProps = {
   editable?: boolean;
-  initialContent?: Array<Block>;
-  handleChangeContent: (value: Array<typeof schema.Block>) => void;
+  initialContent?: string;
+  handleChangeContent: (value: string) => void;
 };
 
 const Editor = ({
@@ -36,7 +37,9 @@ const Editor = ({
 
   const editor = useCreateBlockNote({
     schema,
-    initialContent: initialContent ? initialContent : undefined,
+    initialContent: initialContent
+      ? (JSON.parse(initialContent) as Array<typeof schema.Block>)
+      : undefined,
     uploadFile: handleUploadImage,
   });
 
@@ -49,7 +52,7 @@ const Editor = ({
       theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
       slashMenu={false}
       onChange={() => {
-        handleChangeContent(editor.document);
+        handleChangeContent(JSON.stringify(editor.document, null, 2));
       }}
       className='w-full h-full flex flex-col pb-96 '
     >
@@ -60,6 +63,13 @@ const Editor = ({
           filterSuggestionItems(getCustomSlashMenuItems(editor), query)
         }
       />
+      {/* <SuggestionMenuController
+        triggerCharacter={'@'}
+        getItems={async (query) =>
+          // Gets the mentions menu items
+          filterSuggestionItems(getMentionMenuItems(editor), query)
+        }
+      /> */}
     </BlockNoteView>
   );
 };

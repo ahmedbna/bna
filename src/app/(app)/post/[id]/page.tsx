@@ -94,7 +94,7 @@ export default function Post({ params }: Props) {
 
       <Editor
         editable={false}
-        initialContent={post.content || initialContent}
+        initialContent={post.content || JSON.stringify(initialContent)}
         handleChangeContent={() => null}
       />
 

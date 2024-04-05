@@ -220,7 +220,7 @@ export const update = mutation({
   args: {
     id: v.id('posts'),
     title: v.optional(v.string()),
-    content: v.optional(v.array(v.any())),
+    content: v.optional(v.string()),
     isPublished: v.optional(v.boolean()),
     coverImage: v.optional(v.id('_storage')),
     imageUrl: v.optional(v.string()),

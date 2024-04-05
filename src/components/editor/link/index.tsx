@@ -19,6 +19,7 @@ export const LinkPreviewBlock = createReactBlockSpec(
       return (
         <div className='flex items-center justify-center flex-grow'>
           <LinkPreview
+            editable={props.editor.isEditable}
             link={props.block.props.link}
             handleLinkChange={(url) =>
               props.editor.updateBlock(props.block, {

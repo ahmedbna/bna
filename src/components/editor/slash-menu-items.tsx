@@ -6,12 +6,11 @@ import {
 } from '@blocknote/react';
 
 import { schema } from './schema';
-import { insertEmoji } from './emoji/insert-emoji';
 import { insertAlert } from './alert/insert-alart';
 import { insertCheckbox } from './checkbox/insert-checkbox';
-import { insertCalendar } from './calendar/insert-calendar';
 import { insertCode } from './code/insert-code';
 import { insertLinkPreview } from './link/insert-link-preview';
+import { insertCalendar } from './calendar/insert-calendar';
 
 // List containing all default Slash Menu Items, as well as our custom one.
 export const getCustomSlashMenuItems = (
@@ -19,9 +18,9 @@ export const getCustomSlashMenuItems = (
 ): DefaultReactSuggestionItem[] => [
   ...getDefaultReactSlashMenuItems(editor),
   insertCode(editor),
-  insertAlert(editor),
-  insertEmoji(editor),
-  insertCheckbox(editor),
   insertLinkPreview(editor),
+  insertCheckbox(editor),
+  insertAlert(editor),
+  // insertEmoji(editor),
   // insertCalendar(editor),
 ];

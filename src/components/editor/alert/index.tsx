@@ -74,7 +74,11 @@ export const AlertBlock = createReactBlockSpec(
       return (
         <div className={'alert'} data-alert-type={props.block.props.type}>
           {/*Icon which opens a menu to choose the Alert type*/}
-          <Menu withinPortal={false} zIndex={999999}>
+          <Menu
+            disabled={!props.editor.isEditable}
+            withinPortal={false}
+            zIndex={999999}
+          >
             <Menu.Target>
               <div className={'alert-icon-wrapper'} contentEditable={false}>
                 <Icon

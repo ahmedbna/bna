@@ -16,11 +16,12 @@ interface DataType {
 }
 
 type Props = {
+  editable: boolean;
   link: string;
   handleLinkChange: (link: string) => void;
 };
 
-export const LinkPreview = ({ link, handleLinkChange }: Props) => {
+export const LinkPreview = ({ editable, link, handleLinkChange }: Props) => {
   const [open, setOpen] = useState(false);
   const [previewData, setPreviewData] = useState<DataType | undefined>(
     undefined
@@ -96,7 +97,9 @@ export const LinkPreview = ({ link, handleLinkChange }: Props) => {
                   className='rounded-lg'
                 />
               ) : (
-                <h2>{previewData?.title ? previewData?.title : 'Link'}</h2>
+                <h2 className='font-semibold text-lg underline'>
+                  {previewData?.title ? previewData?.title : 'Link'}
+                </h2>
               )}
             </a>
           </HoverCardTrigger>
@@ -112,23 +115,27 @@ export const LinkPreview = ({ link, handleLinkChange }: Props) => {
                 </p>
               ) : null}
             </div>
-            <div className='w-full flex items-center justify-center mt-6'>
-              <LinkModal
-                link={link}
-                open={open}
-                setOpen={setOpen}
-                handleLinkChange={handleLinkChange}
-              />
-            </div>
+            {editable ? (
+              <div className='w-full flex items-center justify-center mt-6'>
+                <LinkModal
+                  link={link}
+                  open={open}
+                  setOpen={setOpen}
+                  handleLinkChange={handleLinkChange}
+                />
+              </div>
+            ) : null}
           </HoverCardContent>
         </HoverCard>
-      ) : (
+      ) : editable ? (
         <LinkModal
           link={link}
           open={open}
           setOpen={setOpen}
           handleLinkChange={handleLinkChange}
         />
+      ) : (
+        <p>Wrong Link</p>
       )}
     </div>
   );

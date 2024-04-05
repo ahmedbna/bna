@@ -11,7 +11,7 @@ export const insertLinkPreview = (editor: typeof schema.BlockNoteEditor) => ({
     });
   },
   aliases: ['link', 'embed', 'url'],
-  group: 'Other',
+  group: 'More',
   icon: <Link className='w-6 h-6 p-1' />,
   subtext: 'Embed a link into your post.',
 });

@@ -11,7 +11,7 @@ export const insertCode = (editor: typeof schema.BlockNoteEditor) => ({
     });
   },
   aliases: ['code'],
-  group: 'Other',
+  group: 'More',
   icon: <Code2 className='w-6 h-6 p-1' />,
   subtext: 'Insert code into your post.',
 });

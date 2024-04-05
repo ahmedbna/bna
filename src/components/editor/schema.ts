@@ -6,9 +6,10 @@ import {
 } from '@blocknote/core';
 import { CodeBlock } from './code';
 import { AlertBlock } from './alert';
-import { EmojiBlock } from './emoji';
 import { CheckboxBlock } from './checkbox';
 import { LinkPreviewBlock } from './link';
+import { Mention } from './mention';
+import { Font } from './code/font';
 
 export const schema = BlockNoteSchema.create({
   blockSpecs: {
@@ -19,7 +20,6 @@ export const schema = BlockNoteSchema.create({
     // customBlock: CustomBlock,
     codeBolck: CodeBlock,
     alert: AlertBlock,
-    emoji: EmojiBlock,
     checkbox: CheckboxBlock,
     linkPreview: LinkPreviewBlock,
   },
@@ -29,6 +29,8 @@ export const schema = BlockNoteSchema.create({
 
     // Add your own custom inline content:
     // customInlineContent: CustomInlineContent,
+    mention: Mention,
+    // emoji: Emoji,
   },
   styleSpecs: {
     // enable the default styles if desired
@@ -36,5 +38,6 @@ export const schema = BlockNoteSchema.create({
 
     // Add your own custom styles:
     // customStyle: CustomStyle
+    font: Font,
   },
 });

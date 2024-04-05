@@ -1,14 +1,15 @@
-/* .bn-container * {
-  font-family: 'Fira Code', monospace;
-  font-family: 'Source Code Pro', monospace;
-  font-family: 'JetBrains Mono', monospace;
-  font-family: 'Anonymous Pro', monospace;
-} */
+/* .bn-container * { */
+/* font-family: 'Fira Code', monospace; */
+/* font-family: 'Source Code Pro', monospace; */
+/* font-family: 'JetBrains Mono', monospace; */
+/* font-family: 'Anonymous Pro', monospace; */
+/* } */
 
-.bn-container .w-tc-editor {
+/* .bn-container .w-tc-editor {
   font-size: 16px !important;
   font-family: 'Fira Code', monospace !important;
 }
+*/
 
 .bn-container textarea {
   font-size: 16px !important;
