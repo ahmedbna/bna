@@ -3,22 +3,13 @@
 import { createReactBlockSpec } from '@blocknote/react';
 import { LinkPreview } from './link-preview';
 
-// The Checkbox block.
+// The LinkPreview block.
 export const LinkPreviewBlock = createReactBlockSpec(
   {
     type: 'linkPreview',
     content: 'none',
     propSchema: {
       link: {
-        default: '',
-      },
-      title: {
-        default: '',
-      },
-      description: {
-        default: '',
-      },
-      image: {
         default: '',
       },
     },
