@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { useUser } from '@clerk/clerk-react';
 import {
   Bookmark,
+  BookmarkCheck,
   Ellipsis,
   MessageCircle,
   MessageSquareShare,
@@ -15,7 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
-import { useMutation } from 'convex/react';
+import { useConvexAuth, useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -39,18 +40,54 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { SharePost } from './share-post';
+import { Comments } from './comments';
 
 interface Props {
   post: Doc<'posts'>;
 }
 
 export default function PostAuthor({ post }: Props) {
-  const { user } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
+  const { user } = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
+
+  if (isLoading) return <p>Loading...</p>;
+
   const update = useMutation(api.posts.update);
   const deletePost = useMutation(api.posts.deletePost);
+
+  const likePost = useMutation(api.likes.like);
+  const savePost = useMutation(api.saves.save);
+  const follow = useMutation(api.follows.follow);
+
+  const postlikes = useQuery(api.likes.postlikes, { postId: post._id });
+  const postSaves = useQuery(api.saves.postSaves, { postId: post._id });
+  const isFollow = useQuery(api.follows.isFollow, { followerId: post.userId });
+
+  const isLikedByYou =
+    postlikes && postlikes.find((like) => like.userId === user?.id)!;
+
+  const isSavedByYou =
+    postSaves && postSaves.find((save) => save.userId === user?.id)!;
+
+  const handleFollow = async () => {
+    await follow({
+      followerId: post.userId,
+    });
+  };
+  const handleLikePost = async () => {
+    await likePost({
+      postId: post._id,
+    });
+  };
+  const handleSavePost = async () => {
+    await savePost({
+      postId: post._id,
+    });
+  };
 
   const handleDraftPost = () => {
     if (user?.id !== post.userId) return;
@@ -121,60 +158,89 @@ export default function PostAuthor({ post }: Props) {
   };
 
   return (
-    <div className='flex items-end justify-start gap-6'>
-      <Link
-        href={`${post.userId === user?.id ? '/me' : `/profile/${post.userId}`}`}
-        className='flex items-end'
-      >
-        <Avatar className='h-9 w-9 rounded-lg'>
-          <AvatarImage
-            src={post?.userInfo?.pictureUrl}
-            alt={post?.userInfo?.name}
-          />
-          <AvatarFallback>
-            {post?.userInfo?.name?.charAt(0)}
-            {post?.userInfo?.name?.split(' ')?.pop()?.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        <div className='ml-2'>
-          <p className='text-sm font-medium leading-none'>
-            {post?.userInfo?.name}
-          </p>
-          <p className='text-xs text-muted-foreground'>
-            {formatTimeAgo(post._creationTime)}
-          </p>
-        </div>
-      </Link>
+    <div className='flex items-end justify-between'>
+      <div className='flex items-center justify-start gap-4'>
+        <Link
+          href={`${
+            post.userId === user?.id ? '/me' : `/profile/${post.userId}`
+          }`}
+          className='flex items-end'
+        >
+          <Avatar className='h-10 w-10 rounded-lg'>
+            <AvatarImage
+              src={post?.userInfo?.pictureUrl}
+              alt={post?.userInfo?.name}
+            />
+            <AvatarFallback>
+              {post?.userInfo?.name?.charAt(0)}
+              {post?.userInfo?.name?.split(' ')?.pop()?.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div className='ml-2'>
+            <p className='text-sm font-medium leading-none'>
+              {post?.userInfo?.name}
+            </p>
+            <p className='text-xs text-muted-foreground'>
+              {formatTimeAgo(post._creationTime)}
+            </p>
+          </div>
+        </Link>
+        {post.userId !== user?.id ? (
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={handleFollow}
+            className='ml-auto font-medium'
+          >
+            {isFollow ? 'Following' : 'Follow'}
+          </Button>
+        ) : null}
+      </div>
 
       <div className='flex items-center gap-1'>
         {post.isPublished ? (
           <div className='flex items-center gap-1'>
-            <Button variant='outline' className='rounded-full gap-1'>
-              <p className=' text-gray-400 '>{'🔥'}</p>
-              <p>22</p>
+            <Button
+              variant='outline'
+              onClick={handleLikePost}
+              disabled={!isAuthenticated}
+              className='rounded-lg gap-1'
+            >
+              <p className={`text-base ${isLikedByYou ? '' : 'grayscale'}`}>
+                {'🔥'}
+              </p>
+              <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
             </Button>
-            <Button variant='outline' className='rounded-full gap-1'>
-              <MessageCircle className='w-5 h-5' />
-              <p>8</p>
+            <Comments post={post} size='default' />
+            <Button
+              variant='outline'
+              onClick={handleSavePost}
+              disabled={!isAuthenticated || !post.isPublished}
+              className='rounded-lg gap-1'
+            >
+              {isSavedByYou ? (
+                <BookmarkCheck className='w-5 h-5 text-green-500' />
+              ) : (
+                <Bookmark
+                  className={`${
+                    !isAuthenticated || !post.isPublished
+                      ? 'grayscale'
+                      : 'grayscale-0'
+                  } w-5 h-5`}
+                />
+              )}
+
+              <p>{postSaves?.length ? postSaves.length.toString() : '0'}</p>
             </Button>
-            <Button variant='outline' className='rounded-full gap-1'>
-              <Bookmark className='w-5 h-5' />
-              <p>96</p>
-            </Button>
-            <Button variant='outline' className='rounded-full'>
-              <Send className='w-5 h-5' />
-            </Button>
+            <SharePost postId={post._id} size='default' />
           </div>
         ) : null}
 
         {user?.id === post.userId && post.isPublished ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button
-                variant='outline'
-                className='rounded-full gap-1 w-9 h-9 p-0'
-              >
-                <Ellipsis className='w-5 h-5' />
+              <Button variant='outline' className='rounded-lg'>
+                <Ellipsis className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -191,13 +257,13 @@ export default function PostAuthor({ post }: Props) {
           loading ? (
             <Spinner />
           ) : (
-            <div className='flex items-center gap-2'>
+            <div className='flex items-center gap-1'>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
-                    variant='destructive'
-                    className='w-8 h-8 p-0 rounded-full'
                     size='sm'
+                    variant='destructive'
+                    className='rounded-lg'
                   >
                     <Trash2 className='h-4 w-4' />
                   </Button>
@@ -217,7 +283,16 @@ export default function PostAuthor({ post }: Props) {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-              <Button variant='outline' onClick={handlePublishPost}>
+
+              <Button asChild variant='outline' className='rounded-lg'>
+                <Link href='/me'>Your Drafts</Link>
+              </Button>
+
+              <Button
+                variant='outline'
+                className='rounded-lg'
+                onClick={handlePublishPost}
+              >
                 Publish Post
                 <MessageSquareShare className='ml-2 w-4 h-4' />
               </Button>

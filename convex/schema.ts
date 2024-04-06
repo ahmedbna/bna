@@ -61,6 +61,7 @@ export default defineSchema({
   follows: defineTable({
     userId: v.string(),
     followerId: v.string(),
+    userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
     .index('by_follower', ['followerId']),

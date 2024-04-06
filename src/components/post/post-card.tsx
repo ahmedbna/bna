@@ -21,7 +21,7 @@ import { Block } from '@blocknote/core';
 import { useConvexAuth, useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 import { SharePost } from './share-post';
-import { Comments } from './comments';
+import { Spinner } from '../spinner';
 
 type Props = {
   post: Doc<'posts'>;
@@ -31,12 +31,20 @@ export const PostCard = ({ post }: Props) => {
   const { user } = useUser();
   const { isLoading, isAuthenticated } = useConvexAuth();
 
+  if (isLoading) return <Spinner size='sm' />;
+
   const likePost = useMutation(api.likes.like);
   const savePost = useMutation(api.saves.save);
   const follow = useMutation(api.follows.follow);
 
   const postlikes = useQuery(api.likes.postlikes, { postId: post._id });
   const postSaves = useQuery(api.saves.postSaves, { postId: post._id });
+  const commentsCount = useQuery(api.comments.commentsCount, {
+    postId: post._id,
+  });
+  const isFollow =
+    isAuthenticated &&
+    useQuery(api.follows.isFollow, { followerId: post.userId });
 
   const isLikedByYou =
     postlikes && postlikes.find((like) => like.userId === user?.id)!;
@@ -100,9 +108,10 @@ export const PostCard = ({ post }: Props) => {
                 size='sm'
                 variant='outline'
                 onClick={handleFollow}
+                disabled={!isAuthenticated}
                 className='ml-auto font-medium'
               >
-                Follow
+                {isFollow ? 'Following' : 'Follow'}
               </Button>
             ) : null}
           </div>
@@ -160,18 +169,41 @@ export const PostCard = ({ post }: Props) => {
             </p>
             <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
           </Button>
-          <Comments post={post} />
+
+          <Link
+            href={`/post/${post._id}`}
+            className={!isAuthenticated ? 'gray-scale' : ''}
+          >
+            <Button
+              size='sm'
+              variant='outline'
+              disabled={!isAuthenticated}
+              className='rounded-lg gap-1'
+            >
+              <MessageCircle className='w-5 h-5' />
+              <p>
+                {commentsCount?.length ? commentsCount.length.toString() : '0'}
+              </p>
+            </Button>
+          </Link>
+
           <Button
             size='sm'
             variant='outline'
             onClick={handleSavePost}
-            disabled={!isAuthenticated}
+            disabled={!isAuthenticated || !post.isPublished}
             className='rounded-lg gap-1'
           >
             {isSavedByYou ? (
               <BookmarkCheck className='w-5 h-5 text-green-500' />
             ) : (
-              <Bookmark className='w-5 h-5' />
+              <Bookmark
+                className={`${
+                  !isAuthenticated || !post.isPublished
+                    ? 'grayscale'
+                    : 'grayscale-0'
+                } w-5 h-5`}
+              />
             )}
 
             <p>{postSaves?.length ? postSaves.length.toString() : '0'}</p>

@@ -18,16 +18,17 @@ import { CopyIcon } from '@radix-ui/react-icons';
 import { CheckCheck, Send } from 'lucide-react';
 
 type Props = {
+  size?: 'sm' | 'default' | 'lg' | 'icon' | null;
   postId: string;
 };
 
-export function SharePost({ postId }: Props) {
+export function SharePost({ postId, size = 'sm' }: Props) {
   const [copied, setCopied] = useState(false);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline' size='sm' className='rounded-lg'>
+        <Button variant='outline' size={size} className='rounded-lg'>
           <Send className='w-5 h-5' />
         </Button>
       </DialogTrigger>

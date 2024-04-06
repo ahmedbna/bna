@@ -1,20 +1,33 @@
 'use client';
 
-import { SignOutButton, UserButton, useUser } from '@clerk/clerk-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { SignOutButton, useUser } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard } from '@/components/post';
-import { useQuery } from 'convex/react';
+import { useConvexAuth, useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
 import { NewPost } from '@/components/post/new-post';
 import { LogOut } from 'lucide-react';
+import { FollowersModal } from '@/components/followers-modal';
 
 export default function Account() {
   const { user } = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
+
+  if (isLoading) return <p>Loading</p>;
 
   const posts = useQuery(api.posts.getMyPosts);
+  const saves = useQuery(api.saves.saves);
+  const followers = useQuery(api.follows.followers, {});
+  const followings = useQuery(api.follows.followings, {});
 
   const publishedPosts = posts?.filter((post) => post.isPublished);
   const draftPosts = posts?.filter((post) => !post.isPublished);
@@ -33,13 +46,25 @@ export default function Account() {
             </AvatarFallback>
           </Avatar>
           <div className='ml-4'>
-            <div className='flex items-center justify-start gap-2'>
+            <div className='flex items-center justify-start gap-1'>
               <p className='text-2xl font-bold leading-none'>
                 {user?.fullName}
               </p>
-              <SignOutButton>
-                <LogOut className='w-5 h-5 cursor-pointer' />
-              </SignOutButton>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button variant='ghost' className='p-2'>
+                      <SignOutButton>
+                        <LogOut className='w-5 h-5 cursor-pointer' />
+                      </SignOutButton>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Logout</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <p className='text-md text-muted-foreground'>
               {user?.primaryEmailAddress?.emailAddress}
@@ -49,17 +74,13 @@ export default function Account() {
 
         <div className='flex items-center gap-8'>
           <div className='flex flex-col items-center'>
-            <p className='text-2xl font-bold leading-none'>4</p>
+            <p className='text-2xl font-bold leading-none'>
+              {publishedPosts?.length ? publishedPosts?.length.toString() : '0'}
+            </p>
             <p className='text-md text-muted-foreground mt-2'>Posts</p>
           </div>
-          <div className='flex flex-col items-center'>
-            <p className='text-2xl font-bold leading-none'>220</p>
-            <p className='text-md text-muted-foreground mt-2'>Followrs</p>
-          </div>
-          <div className='flex flex-col items-center'>
-            <p className='text-2xl font-bold leading-none'>100</p>
-            <p className='text-md text-muted-foreground mt-2'>Following</p>
-          </div>
+          <FollowersModal title='Followers' follows={followers} />
+          <FollowersModal title='Following' follows={followings} />
         </div>
       </div>
 
@@ -67,9 +88,7 @@ export default function Account() {
         <TabsList className='mb-4'>
           <TabsTrigger value='published'>Published</TabsTrigger>
           <TabsTrigger value='draft'>Draft</TabsTrigger>
-          <TabsTrigger value='saved' disabled>
-            Saved
-          </TabsTrigger>
+          <TabsTrigger value='saved'>Saved</TabsTrigger>
         </TabsList>
         <TabsContent value='published'>
           {publishedPosts?.length ? (
@@ -102,11 +121,18 @@ export default function Account() {
           )}
         </TabsContent>
         <TabsContent value='saved'>
-          <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-            {draftPosts?.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
-          </div>
+          {saves?.length ? (
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
+              {saves.map((post) => (
+                <PostCard key={post?._id} post={post!} />
+              ))}
+            </div>
+          ) : (
+            <EmptyPage
+              title='You have no saved posts'
+              description='Save posts by clicking on bookmark button.'
+            />
+          )}
         </TabsContent>
       </Tabs>
     </div>

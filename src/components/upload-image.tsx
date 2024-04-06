@@ -29,7 +29,7 @@ export const UploadImage = ({ postId }: Props) => {
 
   return (
     <UploadDropzone
-      subtitle='Upload post cover'
+      subtitle='Choose image then click upload!'
       uploadUrl={generateUploadUrl}
       fileTypes={{
         'image/*': ['.png', '.gif', '.jpeg', '.jpg'],

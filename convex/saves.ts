@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
+import { asyncMap } from 'convex-helpers';
 
 export const save = mutation({
   args: {
@@ -8,9 +9,19 @@ export const save = mutation({
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
-      throw new Error('Not authenticated');
+      throw new Error('Not authenticated!');
     }
     const userId = identity.subject;
+
+    const post = await ctx.db.get(args.postId);
+
+    if (!post) {
+      throw new Error('Post Not Found!');
+    }
+
+    if (!post.isPublished) {
+      throw new Error('Cannot save darft post!');
+    }
 
     const existingSave = await ctx.db
       .query('saves')
@@ -40,22 +51,46 @@ export const postSaves = query({
   },
 });
 
-// export const userSaves = query({
-//   args: {
-//     userId: v.string(),
-//   },
-//   handler: async (ctx, args) => {
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error('Not authenticated');
-//     }
-//     const userId = identity.subject;
+export const saves = query({
+  args: {},
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+    const userId = identity.subject;
 
-//     const saves = await ctx.db
-//       .query('saves')
-//       .withIndex('by_userId', (q) => q.eq('userId', userId))
-//       .collect();
+    const saves = await ctx.db
+      .query('saves')
+      .withIndex('by_userId', (q) => q.eq('userId', userId))
+      .collect();
 
-//     return saves;
-//   },
-// });
+    if (!saves) {
+      throw new Error('Not found');
+    }
+
+    return await asyncMap(saves, async (save) => {
+      const post = await ctx.db.get(save.postId);
+
+      if (!post) {
+        throw new Error('Post Not found');
+      }
+
+      if (post.isPublished) {
+        const coverUrl = post.coverImage
+          ? await ctx.storage.getUrl(post.coverImage)
+          : undefined;
+
+        const imageUrl =
+          coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
+
+        const userInfo = await ctx.db
+          .query('users')
+          .withIndex('by_userId', (q) => q.eq('userId', post.userId))
+          .first();
+
+        return { ...post, imageUrl, userInfo };
+      }
+    });
+  },
+});
