@@ -173,9 +173,7 @@ export const getMyPublishById = query({
 });
 
 export const create = mutation({
-  args: {
-    title: v.string(),
-  },
+  args: {},
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -191,13 +189,46 @@ export const create = mutation({
 
     const post = await ctx.db.insert('posts', {
       userId,
-      title: args.title,
+      title: 'Click to Make it Your Title...',
       isPublished: false,
       color1,
       color2,
     });
 
     return post;
+  },
+});
+
+export const deletePost = mutation({
+  args: {
+    id: v.id('posts'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('You must be logged in to create a post');
+    }
+
+    const userId = identity.subject;
+
+    const existingPost = await ctx.db.get(args.id);
+
+    if (!existingPost) {
+      throw new Error('Not found');
+    }
+
+    if (existingPost.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    if (existingPost.isPublished) {
+      throw new Error('Post cannot be deleted as it is published!');
+    }
+
+    await ctx.db.delete(args.id);
+
+    return { message: 'Deleted!' };
   },
 });
 

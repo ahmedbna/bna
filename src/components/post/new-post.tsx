@@ -28,7 +28,7 @@ export const NewPost = () => {
   const handleCreateNewPost = () => {
     setLoading(true);
 
-    const response = create({ title: 'Click to Edit Title...' });
+    const response = create();
 
     toast.promise(response, {
       loading: 'Creating post...',
@@ -49,7 +49,16 @@ export const NewPost = () => {
     <>
       {!isLoading && !isAuthenticated ? (
         <SignInButton mode='modal'>
-          <Button>New Post</Button>
+          <Button variant='default' className='w-full'>
+            {loading ? (
+              <Spinner />
+            ) : (
+              <p className='flex items-center justify-center text-md font-bold tracking-tight'>
+                New Post
+                <PencilLine className='w-4 h-4 ml-2' />
+              </p>
+            )}
+          </Button>
         </SignInButton>
       ) : (
         <Button

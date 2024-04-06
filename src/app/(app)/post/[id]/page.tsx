@@ -98,13 +98,13 @@ export default function Post({ params }: Props) {
         handleChangeContent={() => null}
       />
 
-      <div className='fixed bottom-0 right-0 flex justify-center mr-2 mb-2'>
+      {/* <div className='fixed bottom-0 right-0 flex justify-center mr-2 mb-2'>
         <div className='w-full max-w-[800px]'>
           <Alert>
             <PostAuthor post={post} />
           </Alert>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

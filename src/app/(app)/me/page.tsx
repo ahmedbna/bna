@@ -7,6 +7,9 @@ import { PostCard } from '@/components/post';
 import { useQuery } from 'convex/react';
 import { api } from '../../../../convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import EmptyPage from '@/components/empty-page';
+import { NewPost } from '@/components/post/new-post';
+import { LogOut } from 'lucide-react';
 
 export default function Account() {
   const { user } = useUser();
@@ -18,11 +21,7 @@ export default function Account() {
 
   return (
     <div className='h-full flex flex-col gap-16 py-14 px-8'>
-      {/* <SignOutButton>
-        <Button>Logout</Button>
-      </SignOutButton> */}
-
-      {/* <UserButton afterSignOutUrl='/' /> */}
+      {/* <UserButton appearance={undefined} afterSignOutUrl='/' /> */}
 
       <div className='flex items-end justify-between'>
         <div className='flex items-end'>
@@ -34,7 +33,14 @@ export default function Account() {
             </AvatarFallback>
           </Avatar>
           <div className='ml-4'>
-            <p className='text-2xl font-bold leading-none'>{user?.fullName}</p>
+            <div className='flex items-center justify-start gap-2'>
+              <p className='text-2xl font-bold leading-none'>
+                {user?.fullName}
+              </p>
+              <SignOutButton>
+                <LogOut className='w-5 h-5 cursor-pointer' />
+              </SignOutButton>
+            </div>
             <p className='text-md text-muted-foreground'>
               {user?.primaryEmailAddress?.emailAddress}
             </p>
@@ -57,7 +63,7 @@ export default function Account() {
         </div>
       </div>
 
-      <Tabs defaultValue='published'>
+      <Tabs defaultValue='draft'>
         <TabsList className='mb-4'>
           <TabsTrigger value='published'>Published</TabsTrigger>
           <TabsTrigger value='draft'>Draft</TabsTrigger>
@@ -66,18 +72,34 @@ export default function Account() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value='published'>
-          <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-            {publishedPosts?.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
-          </div>
+          {publishedPosts?.length ? (
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
+              {publishedPosts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <EmptyPage
+              title='You have no published posts'
+              description='Publish your post to the world form the draft tab.'
+            />
+          )}
         </TabsContent>
         <TabsContent value='draft'>
-          <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-            {draftPosts?.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
-          </div>
+          {draftPosts?.length ? (
+            <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
+              {draftPosts?.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <EmptyPage
+              title='You have no darfts'
+              description='Write your first post now.'
+            >
+              <NewPost />
+            </EmptyPage>
+          )}
         </TabsContent>
         <TabsContent value='saved'>
           <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>

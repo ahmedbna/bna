@@ -11,6 +11,7 @@ export default defineSchema({
     imageUrl: v.optional(v.string()),
     coverImage: v.optional(v.id('_storage')),
     isPublished: v.boolean(),
+    publishedAt: v.optional(v.string()),
     userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
@@ -24,6 +25,7 @@ export default defineSchema({
     userId: v.string(),
     email: v.string(),
     name: v.optional(v.string()),
+    username: v.optional(v.string()),
     bio: v.optional(v.string()),
     phoneNumber: v.optional(v.string()),
     pictureUrl: v.optional(v.string()),
@@ -33,4 +35,40 @@ export default defineSchema({
     .index('by_userId', ['userId'])
     .index('by_name', ['name'])
     .index('by_token', ['tokenIdentifier']),
+
+  likes: defineTable({
+    userId: v.string(),
+    postId: v.id('posts'),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_postId', ['postId']),
+
+  saves: defineTable({
+    userId: v.string(),
+    postId: v.id('posts'),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_postId', ['postId']),
+
+  comments: defineTable({
+    userId: v.string(),
+    postId: v.id('posts'),
+    content: v.string(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_postId', ['postId']),
+
+  follows: defineTable({
+    userId: v.string(),
+    followerId: v.string(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_follower', ['followerId']),
+
+  clubs: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    posts: v.optional(v.array(v.id('posts'))),
+    followerIds: v.optional(v.array(v.string())),
+  }).index('by_name', ['name']),
 });

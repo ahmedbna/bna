@@ -9,6 +9,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { api } from '../../../convex/_generated/api';
 import { UploadImage } from '../upload-image';
 import Gradient from '../gradient';
+import PostAuthor from './post-author';
 
 interface Props {
   isDraft: boolean;
@@ -65,7 +66,9 @@ export default function PostHeader({ isDraft = false, post }: Props) {
         />
       )}
 
-      <div className='px-[54px] flex flex-col gap-4 mt-8'>
+      <div className='px-[54px] flex flex-col gap-5 mt-8'>
+        <PostAuthor post={post} />
+
         {editingTitle && isDraft ? (
           <TextareaAutosize
             ref={inputRef}

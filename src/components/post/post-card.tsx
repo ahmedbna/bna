@@ -1,4 +1,5 @@
-import * as React from 'react';
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -11,12 +12,16 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bookmark, MessageCircle, Send } from 'lucide-react';
+import { Bookmark, BookmarkCheck, MessageCircle, Send } from 'lucide-react';
 import { Doc } from '../../../convex/_generated/dataModel';
 import Gradient from '../gradient';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useUser } from '@clerk/clerk-react';
-import { Block, PartialBlock } from '@blocknote/core';
+import { Block } from '@blocknote/core';
+import { useConvexAuth, useMutation, useQuery } from 'convex/react';
+import { api } from '../../../convex/_generated/api';
+import { SharePost } from './share-post';
+import { Comments } from './comments';
 
 type Props = {
   post: Doc<'posts'>;
@@ -24,6 +29,36 @@ type Props = {
 
 export const PostCard = ({ post }: Props) => {
   const { user } = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
+
+  const likePost = useMutation(api.likes.like);
+  const savePost = useMutation(api.saves.save);
+  const follow = useMutation(api.follows.follow);
+
+  const postlikes = useQuery(api.likes.postlikes, { postId: post._id });
+  const postSaves = useQuery(api.saves.postSaves, { postId: post._id });
+
+  const isLikedByYou =
+    postlikes && postlikes.find((like) => like.userId === user?.id)!;
+
+  const isSavedByYou =
+    postSaves && postSaves.find((save) => save.userId === user?.id)!;
+
+  const handleFollow = async () => {
+    await follow({
+      followerId: post.userId,
+    });
+  };
+  const handleLikePost = async () => {
+    await likePost({
+      postId: post._id,
+    });
+  };
+  const handleSavePost = async () => {
+    await savePost({
+      postId: post._id,
+    });
+  };
 
   const content = JSON.parse(post.content || '[]');
   const excerpt = content.filter(
@@ -41,7 +76,7 @@ export const PostCard = ({ post }: Props) => {
               }`}
               className='flex items-center'
             >
-              <Avatar className='h-8 w-8'>
+              <Avatar className='h-8 w-8 rounded-lg'>
                 <AvatarImage
                   src={post?.userInfo?.pictureUrl}
                   alt={post?.userInfo?.name}
@@ -51,7 +86,7 @@ export const PostCard = ({ post }: Props) => {
                   {post?.userInfo?.name?.split(' ')?.pop()?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <div className='ml-4'>
+              <div className='ml-2'>
                 <p className='text-sm font-medium leading-none'>
                   {post?.userInfo?.name}
                 </p>
@@ -60,9 +95,16 @@ export const PostCard = ({ post }: Props) => {
                 </p>
               </div>
             </Link>
-            <Button variant='outline' size='sm' className='ml-auto font-medium'>
-              Follow
-            </Button>
+            {post.userId !== user?.id ? (
+              <Button
+                size='sm'
+                variant='outline'
+                onClick={handleFollow}
+                className='ml-auto font-medium'
+              >
+                Follow
+              </Button>
+            ) : null}
           </div>
         </CardHeader>
 
@@ -106,22 +148,36 @@ export const PostCard = ({ post }: Props) => {
 
       <CardFooter className='flex justify-between p-4 '>
         <div className='flex items-center gap-1'>
-          <Button variant='outline' size='sm' className='rounded-full gap-1'>
-            <p className=' text-gray-400 '>{'🔥'}</p>
-            <p>22</p>
+          <Button
+            size='sm'
+            variant='outline'
+            onClick={handleLikePost}
+            disabled={!isAuthenticated}
+            className='rounded-lg gap-1'
+          >
+            <p className={`text-base ${isLikedByYou ? '' : 'grayscale'}`}>
+              {'🔥'}
+            </p>
+            <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
           </Button>
-          <Button variant='outline' size='sm' className='rounded-full gap-1'>
-            <MessageCircle className='w-5 h-5' />
-            <p>8</p>
-          </Button>
-          <Button variant='outline' size='sm' className='rounded-full gap-1'>
-            <Bookmark className='w-5 h-5' />
-            <p>96</p>
+          <Comments post={post} />
+          <Button
+            size='sm'
+            variant='outline'
+            onClick={handleSavePost}
+            disabled={!isAuthenticated}
+            className='rounded-lg gap-1'
+          >
+            {isSavedByYou ? (
+              <BookmarkCheck className='w-5 h-5 text-green-500' />
+            ) : (
+              <Bookmark className='w-5 h-5' />
+            )}
+
+            <p>{postSaves?.length ? postSaves.length.toString() : '0'}</p>
           </Button>
         </div>
-        <Button variant='outline' size='sm' className='rounded-full'>
-          <Send className='w-5 h-5' />
-        </Button>
+        <SharePost postId={post._id} />
       </CardFooter>
     </Card>
   );

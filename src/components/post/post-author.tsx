@@ -5,7 +5,14 @@ import { CardHeader } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { useUser } from '@clerk/clerk-react';
-import { Bookmark, Ellipsis, MessageCircle, Send, Trash2 } from 'lucide-react';
+import {
+  Bookmark,
+  Ellipsis,
+  MessageCircle,
+  MessageSquareShare,
+  Send,
+  Trash2,
+} from 'lucide-react';
 import Link from 'next/link';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useMutation } from 'convex/react';
@@ -43,6 +50,7 @@ export default function PostAuthor({ post }: Props) {
   const [loading, setLoading] = useState(false);
 
   const update = useMutation(api.posts.update);
+  const deletePost = useMutation(api.posts.deletePost);
 
   const handleDraftPost = () => {
     if (user?.id !== post.userId) return;
@@ -92,10 +100,28 @@ export default function PostAuthor({ post }: Props) {
       });
   };
 
-  const handleDeletePost = () => {};
+  const handleDeletePost = () => {
+    setLoading(true);
+
+    const promise = deletePost({
+      id: post._id,
+    })
+      .then(() => {
+        router.replace('/');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
+    toast.promise(promise, {
+      loading: 'Deleting post...',
+      success: 'Post is deleted!',
+      error: 'Something went wrong',
+    });
+  };
 
   return (
-    <div className='flex items-center justify-between gap-12'>
+    <div className='flex items-end justify-start gap-6'>
       <Link
         href={`${post.userId === user?.id ? '/me' : `/profile/${post.userId}`}`}
         className='flex items-end'
@@ -141,38 +167,6 @@ export default function PostAuthor({ post }: Props) {
           </div>
         ) : null}
 
-        {user?.id === post.userId && !post.isPublished ? (
-          loading ? (
-            <Spinner />
-          ) : (
-            <div className='flex items-center gap-2'>
-              <Button onClick={handlePublishPost}>Publish Post</Button>
-
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button onClick={handleDeletePost} variant='destructive'>
-                    <Trash2 />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                  <DialogHeader>
-                    <DialogTitle>Delet Post</DialogTitle>
-                    <DialogDescription>
-                      Are you sure you want to delete this post!
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <DialogFooter>
-                    <Button onClick={handleDeletePost} variant='destructive'>
-                      Delete post
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          )
-        ) : null}
-
         {user?.id === post.userId && post.isPublished ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -191,6 +185,44 @@ export default function PostAuthor({ post }: Props) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        ) : null}
+
+        {user?.id === post.userId && !post.isPublished ? (
+          loading ? (
+            <Spinner />
+          ) : (
+            <div className='flex items-center gap-2'>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    variant='destructive'
+                    className='w-8 h-8 p-0 rounded-full'
+                    size='sm'
+                  >
+                    <Trash2 className='h-4 w-4' />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className='sm:max-w-[425px]'>
+                  <DialogHeader>
+                    <DialogTitle>Delet Post</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to delete this post!
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <DialogFooter>
+                    <Button variant='destructive' onClick={handleDeletePost}>
+                      Delete Post
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              <Button variant='outline' onClick={handlePublishPost}>
+                Publish Post
+                <MessageSquareShare className='ml-2 w-4 h-4' />
+              </Button>
+            </div>
+          )
         ) : null}
       </div>
 

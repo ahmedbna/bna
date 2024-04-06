@@ -8,9 +8,10 @@ import { useConvexAuth } from 'convex/react';
 import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { Spinner } from '@/components/spinner';
 import { useSearch } from '@/hooks/use-search';
-import { Search } from 'lucide-react';
+import { CircleUserRound, Search } from 'lucide-react';
 import { AvatarImage, Avatar, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
+import { AvatarIcon } from '@radix-ui/react-icons';
 
 export const Header = () => {
   const search = useSearch();
@@ -35,13 +36,15 @@ export const Header = () => {
         {!isLoading && !isAuthenticated && (
           <>
             <SignInButton mode='modal'>
-              <Button size='sm'>Login</Button>
+              <Button className='p-1.5' variant='ghost'>
+                <AvatarIcon className='w-6 h-6' />
+              </Button>
             </SignInButton>
           </>
         )}
         {!isLoading && isAuthenticated && (
           <Link href='/me'>
-            <Avatar className='h-6 w-6 ml-2'>
+            <Avatar className='h-7 w-7 ml-2'>
               <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
               <AvatarFallback>
                 {user?.firstName?.charAt(0)}

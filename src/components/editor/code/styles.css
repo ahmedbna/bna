@@ -1,9 +1,12 @@
-/* .bn-container * { */
-/* font-family: 'Fira Code', monospace; */
-/* font-family: 'Source Code Pro', monospace; */
-/* font-family: 'JetBrains Mono', monospace; */
-/* font-family: 'Anonymous Pro', monospace; */
-/* } */
+/* .bn-container * {
+  font-family: 'Fira Code', monospace;
+} */
+
+/* .bn-container * {
+  font-family: 'Source Code Pro', monospace;
+  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Anonymous Pro', monospace;
+} */
 
 /* .bn-container .w-tc-editor {
   font-size: 16px !important;
