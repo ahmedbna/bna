@@ -22,6 +22,7 @@ import { useConvexAuth, useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { SharePost } from './share-post';
 import { Spinner } from '../spinner';
+import { PostFollow } from './post-follow';
 
 type Props = {
   post: Doc<'posts'>;
@@ -29,9 +30,6 @@ type Props = {
 
 export const PostCard = ({ post }: Props) => {
   const { user } = useUser();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  if (isLoading) return <Spinner size='sm' />;
 
   const likePost = useMutation(api.likes.like);
   const savePost = useMutation(api.saves.save);
@@ -42,6 +40,9 @@ export const PostCard = ({ post }: Props) => {
   const commentsCount = useQuery(api.comments.commentsCount, {
     postId: post._id,
   });
+
+  const { isLoading, isAuthenticated } = useConvexAuth();
+
   const isFollow =
     isAuthenticated &&
     useQuery(api.follows.isFollow, { followerId: post.userId });
@@ -103,17 +104,18 @@ export const PostCard = ({ post }: Props) => {
                 </p>
               </div>
             </Link>
-            {post.userId !== user?.id ? (
+            {isAuthenticated ? (
+              <PostFollow userId={post.userId} />
+            ) : (
               <Button
+                disabled
                 size='sm'
                 variant='outline'
-                onClick={handleFollow}
-                disabled={!isAuthenticated}
                 className='ml-auto font-medium'
               >
-                {isFollow ? 'Following' : 'Follow'}
+                Follow
               </Button>
-            ) : null}
+            )}
           </div>
         </CardHeader>
 

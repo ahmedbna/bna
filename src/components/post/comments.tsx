@@ -46,10 +46,6 @@ type Props = {
 
 export const Comments = ({ size = 'sm', post }: Props) => {
   const { user } = useUser();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  if (isLoading) return <p>Loading...</p>;
-
   const comment = useMutation(api.comments.comment);
   const commentsCount = useQuery(api.comments.commentsCount, {
     postId: post._id,
@@ -57,6 +53,8 @@ export const Comments = ({ size = 'sm', post }: Props) => {
   const postComments = useQuery(api.comments.postComments, {
     postId: post._id,
   });
+
+  const { isLoading, isAuthenticated } = useConvexAuth();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

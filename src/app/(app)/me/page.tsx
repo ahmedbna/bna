@@ -10,7 +10,7 @@ import { SignOutButton, useUser } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard } from '@/components/post';
-import { useConvexAuth, useQuery } from 'convex/react';
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
@@ -20,9 +20,6 @@ import { FollowersModal } from '@/components/followers-modal';
 
 export default function Account() {
   const { user } = useUser();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  if (isLoading) return <p>Loading</p>;
 
   const posts = useQuery(api.posts.getMyPosts);
   const saves = useQuery(api.saves.saves);
@@ -55,7 +52,7 @@ export default function Account() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant='ghost' className='p-2'>
-                      <SignOutButton >
+                      <SignOutButton>
                         <LogOut className='w-5 h-5 cursor-pointer' />
                       </SignOutButton>
                     </Button>

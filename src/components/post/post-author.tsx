@@ -48,13 +48,9 @@ interface Props {
 }
 
 export default function PostAuthor({ post }: Props) {
+  const { user } = useUser();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
-  const { user } = useUser();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  if (isLoading) return <p>Loading...</p>;
 
   const update = useMutation(api.posts.update);
   const deletePost = useMutation(api.posts.deletePost);
@@ -72,6 +68,8 @@ export default function PostAuthor({ post }: Props) {
 
   const isSavedByYou =
     postSaves && postSaves.find((save) => save.userId === user?.id)!;
+
+  const { isLoading, isAuthenticated } = useConvexAuth();
 
   const handleFollow = async () => {
     await follow({

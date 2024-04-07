@@ -35,7 +35,7 @@ export function FollowersModal({ title, follows }: Props) {
         <div className='max-h-[400px] rounded-lg overflow-y-auto'>
           {follows?.length
             ? follows.map((follow: any) => (
-                <div className='mb-2'>
+                <div key={follow._id} className='mb-2'>
                   <UserCard userInfo={follow.userInfo} />
                 </div>
               ))

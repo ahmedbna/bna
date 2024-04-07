@@ -19,16 +19,15 @@ interface Props {
 
 export const PostPage = ({ postId, isDraft, editable }: Props) => {
   const { user } = useUser();
+  const update = useMutation(api.posts.update);
+  const post = useQuery(api.posts.getPostById, {
+    postId,
+  });
 
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
     []
   );
-
-  const update = useMutation(api.posts.update);
-  const post = useQuery(api.posts.getPostById, {
-    postId,
-  });
 
   if (post === undefined) {
     return (

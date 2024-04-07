@@ -46,9 +46,9 @@ export const ProCard = () => {
         <DialogHeader>
           <DialogTitle>Join waitlist</DialogTitle>
           <DialogDescription>
-            Add your email to join waitlist. We're working hard on it. In the
+            {`Add your email to join waitlist. We're working hard on it. In the
             meantime, feel free to explore our website or reach out if you have
-            any questions!
+            any questions!`}
           </DialogDescription>
         </DialogHeader>
         <div className='flex items-center space-x-2'>
