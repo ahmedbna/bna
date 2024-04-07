@@ -22,6 +22,7 @@ import type * as likes from "../likes.js";
 import type * as posts from "../posts.js";
 import type * as saves from "../saves.js";
 import type * as users from "../users.js";
+import type * as waitings from "../waitings.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   posts: typeof posts;
   saves: typeof saves;
   users: typeof users;
+  waitings: typeof waitings;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

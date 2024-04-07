@@ -45,15 +45,15 @@ export const metadata: Metadata = {
     description: 'Ignite Creativity!',
     images: ['/bna.png'],
   },
-  // icons: {
-  //   icon: '/apple-icon.png',
-  //   shortcut: '/apple-icon.png',
-  //   apple: '/apple-icon.png',
-  //   other: {
-  //     rel: 'apple-touch-icon-precomposed',
-  //     url: '/apple-touch-icon-precomposed.png',
-  //   },
-  // },
+  icons: {
+    icon: '/_icons/apple-touch-icon.png',
+    shortcut: '/_icons/apple-touch-icon.png',
+    apple: '/_icons/apple-touch-icon.png',
+    other: {
+      rel: 'apple-touch-icon-precomposed',
+      url: '/_icons/apple-touch-icon.png',
+    },
+  },
   // icons: {
   //   icon: [
   //     {

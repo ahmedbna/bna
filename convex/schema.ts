@@ -66,6 +66,13 @@ export default defineSchema({
     .index('by_userId', ['userId'])
     .index('by_follower', ['followerId']),
 
+  waitings: defineTable({
+    userId: v.string(),
+    email: v.string(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_email', ['email']),
+
   clubs: defineTable({
     name: v.string(),
     slug: v.string(),
