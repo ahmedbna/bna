@@ -30,10 +30,10 @@ type Props = {
 
 export const PostCard = ({ post }: Props) => {
   const { user } = useUser();
+  const { isLoading, isAuthenticated } = useConvexAuth();
 
   const likePost = useMutation(api.likes.like);
   const savePost = useMutation(api.saves.save);
-  const follow = useMutation(api.follows.follow);
 
   const postlikes = useQuery(api.likes.postlikes, { postId: post._id });
   const postSaves = useQuery(api.saves.postSaves, { postId: post._id });
@@ -41,23 +41,12 @@ export const PostCard = ({ post }: Props) => {
     postId: post._id,
   });
 
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  const isFollow =
-    isAuthenticated &&
-    useQuery(api.follows.isFollow, { followerId: post.userId });
-
   const isLikedByYou =
     postlikes && postlikes.find((like) => like.userId === user?.id)!;
 
   const isSavedByYou =
     postSaves && postSaves.find((save) => save.userId === user?.id)!;
 
-  const handleFollow = async () => {
-    await follow({
-      followerId: post.userId,
-    });
-  };
   const handleLikePost = async () => {
     await likePost({
       postId: post._id,

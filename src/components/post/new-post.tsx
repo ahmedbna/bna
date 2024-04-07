@@ -12,18 +12,9 @@ import { PencilLine } from 'lucide-react';
 
 export const NewPost = () => {
   const router = useRouter();
-  const { isLoading, isAuthenticated } = useConvexAuth();
-
-  if (isLoading) {
-    return (
-      <div className='h-full flex items-center justify-center'>
-        <Spinner size='lg' />
-      </div>
-    );
-  }
-
-  const create = useMutation(api.posts.create);
   const [loading, setLoading] = useState(false);
+  const { isLoading, isAuthenticated } = useConvexAuth();
+  const create = useMutation(api.posts.create);
 
   const handleCreateNewPost = () => {
     setLoading(true);

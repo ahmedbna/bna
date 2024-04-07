@@ -91,7 +91,10 @@ export const Comments = ({ size = 'sm', post }: Props) => {
           <div className='max-h-[400px] rounded-lg overflow-y-auto mx-4'>
             {postComments?.length
               ? postComments.map((comment) => (
-                  <div className='w-full bg-zinc-800 p-2 rounded-lg flex items-start justify-start mb-2'>
+                  <div
+                    key={comment._id}
+                    className='w-full bg-zinc-800 p-2 rounded-lg flex items-start justify-start mb-2'
+                  >
                     <Link
                       href={`${
                         comment.userId === user?.id
