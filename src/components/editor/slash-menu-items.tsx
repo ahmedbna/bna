@@ -10,7 +10,6 @@ import { insertAlert } from './alert/insert-alart';
 import { insertCheckbox } from './checkbox/insert-checkbox';
 import { insertCode } from './code/insert-code';
 import { insertLinkPreview } from './link/insert-link-preview';
-import { insertCalendar } from './calendar/insert-calendar';
 
 // List containing all default Slash Menu Items, as well as our custom one.
 export const getCustomSlashMenuItems = (
