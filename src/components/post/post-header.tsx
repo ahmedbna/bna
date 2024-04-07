@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import { ElementRef, useRef, useState } from 'react';
-import { Doc } from '../../../convex/_generated/dataModel';
+import { Doc } from '@/convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import TextareaAutosize from 'react-textarea-autosize';
 
-import { api } from '../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { UploadImage } from '../upload-image';
 import Gradient from '../gradient';
 import PostAuthor from './post-author';
@@ -16,7 +16,7 @@ interface Props {
   post: Doc<'posts'>;
 }
 
-export default function PostHeader({ isDraft = false, post }: Props) {
+export const PostHeader = ({ isDraft = false, post }: Props) => {
   const inputRef = useRef<ElementRef<'textarea'>>(null);
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(post.title);
@@ -94,4 +94,4 @@ export default function PostHeader({ isDraft = false, post }: Props) {
       </div>
     </div>
   );
-}
+};

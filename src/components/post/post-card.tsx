@@ -13,13 +13,13 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bookmark, BookmarkCheck, MessageCircle, Send } from 'lucide-react';
-import { Doc } from '../../../convex/_generated/dataModel';
+import { Doc } from '@/convex/_generated/dataModel';
 import Gradient from '../gradient';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useUser } from '@clerk/clerk-react';
 import { Block } from '@blocknote/core';
 import { useConvexAuth, useMutation, useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { SharePost } from './share-post';
 import { Spinner } from '../spinner';
 

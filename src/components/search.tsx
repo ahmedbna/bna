@@ -14,7 +14,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { api } from '../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 
 export const SearchCommand = () => {
   const router = useRouter();

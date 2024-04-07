@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard } from '@/components/post';
 import { useConvexAuth, useQuery } from 'convex/react';
-import { api } from '../../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
 import { NewPost } from '@/components/post/new-post';
@@ -55,7 +55,7 @@ export default function Account() {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button variant='ghost' className='p-2'>
-                      <SignOutButton>
+                      <SignOutButton >
                         <LogOut className='w-5 h-5 cursor-pointer' />
                       </SignOutButton>
                     </Button>

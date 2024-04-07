@@ -32,7 +32,7 @@ export default function RootLayout({
   }
 
   if (!isAuthenticated) {
-    return redirect('/login');
+    return redirect('/');
   }
 
   return <div>{children}</div>;

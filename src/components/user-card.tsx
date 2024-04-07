@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useUser } from '@clerk/clerk-react';
-import { api } from '../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { useMutation, useQuery } from 'convex/react';
 import { Button } from './ui/button';
 

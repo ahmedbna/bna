@@ -1,6 +1,6 @@
 'use client';
 
-import { Doc } from '../../../convex/_generated/dataModel';
+import { Doc } from '@/convex/_generated/dataModel';
 import { CardHeader } from '../ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Button } from '../ui/button';
@@ -17,7 +17,7 @@ import {
 import Link from 'next/link';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useConvexAuth, useMutation, useQuery } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';

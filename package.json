@@ -12,6 +12,7 @@
     "@blocknote/core": "^0.12.3",
     "@blocknote/react": "^0.12.3",
     "@clerk/clerk-react": "^4.30.7",
+    "@clerk/nextjs": "^4.29.12",
     "@dhaiwat10/react-link-preview": "^1.15.0",
     "@edgestore/react": "^0.1.6",
     "@edgestore/server": "^0.1.6",

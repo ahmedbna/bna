@@ -1,8 +1,8 @@
 'use client';
 
 import { z } from 'zod';
-import { Doc } from '../../../convex/_generated/dataModel';
-import { api } from '../../../convex/_generated/api';
+import { Doc } from '@/convex/_generated/dataModel';
+import { api } from '@/convex/_generated/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';

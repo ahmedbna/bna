@@ -79,64 +79,64 @@ export const getPostById = query({
       throw new Error('Not found');
     }
 
-    if (post.isPublished) {
-      const coverUrl = post.coverImage
-        ? await ctx.storage.getUrl(post.coverImage)
-        : undefined;
+    // if (post.isPublished) {
+    const coverUrl = post.coverImage
+      ? await ctx.storage.getUrl(post.coverImage)
+      : undefined;
 
-      const imageUrl =
-        coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
+    const imageUrl =
+      coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
 
-      const userInfo = await ctx.db
-        .query('users')
-        .withIndex('by_userId', (q) => q.eq('userId', post.userId))
-        .first();
+    const userInfo = await ctx.db
+      .query('users')
+      .withIndex('by_userId', (q) => q.eq('userId', post.userId))
+      .first();
 
-      return { ...post, imageUrl, userInfo };
-    } else {
-      return null;
-    }
+    return { ...post, imageUrl, userInfo };
+    // } else {
+    //   return null;
+    // }
   },
 });
 
-export const getMyDraftById = query({
-  args: { postId: v.id('posts') },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error('Not authenticated');
-    }
-    const userId = identity.subject;
+// export const getMyDraftById = query({
+//   args: { postId: v.id('posts') },
+//   handler: async (ctx, args) => {
+//     const identity = await ctx.auth.getUserIdentity();
+//     if (!identity) {
+//       throw new Error('Not authenticated');
+//     }
+//     const userId = identity.subject;
 
-    const post = await ctx.db.get(args.postId);
+//     const post = await ctx.db.get(args.postId);
 
-    if (!post) {
-      throw new Error('Not found');
-    }
+//     if (!post) {
+//       throw new Error('Not found');
+//     }
 
-    if (post.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
+//     if (post.userId !== userId) {
+//       throw new Error('Unauthorized');
+//     }
 
-    if (!post.isPublished) {
-      const coverUrl = post.coverImage
-        ? await ctx.storage.getUrl(post.coverImage)
-        : undefined;
+//     if (!post.isPublished) {
+//       const coverUrl = post.coverImage
+//         ? await ctx.storage.getUrl(post.coverImage)
+//         : undefined;
 
-      const imageUrl =
-        coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
+//       const imageUrl =
+//         coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
 
-      const userInfo = await ctx.db
-        .query('users')
-        .withIndex('by_userId', (q) => q.eq('userId', post.userId))
-        .first();
+//       const userInfo = await ctx.db
+//         .query('users')
+//         .withIndex('by_userId', (q) => q.eq('userId', post.userId))
+//         .first();
 
-      return { ...post, imageUrl, userInfo };
-    } else {
-      return null;
-    }
-  },
-});
+//       return { ...post, imageUrl, userInfo };
+//     } else {
+//       return null;
+//     }
+//   },
+// });
 
 export const getMyPublishById = query({
   args: { postId: v.id('posts') },

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useConvexAuth, useMutation } from 'convex/react';
-import { api } from '../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

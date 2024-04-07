@@ -2,8 +2,8 @@
 
 import { useMutation } from 'convex/react';
 import { UploadDropzone, UploadFileResponse } from '@xixixao/uploadstuff/react';
-import { api } from '../../convex/_generated/api';
-import { Id } from '../../convex/_generated/dataModel';
+import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
 import '@xixixao/uploadstuff/react/styles.css';
 import { toast } from 'sonner';
 

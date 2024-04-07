@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard } from '@/components/post';
 import { useQuery } from 'convex/react';
-import { api } from '../../../../../convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function Profile() {
@@ -74,16 +74,12 @@ export default function Profile() {
         </TabsContent>
         <TabsContent value='draft'>
           <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-            {draftPosts?.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
+            {draftPosts?.map((post) => <PostCard key={post._id} post={post} />)}
           </div>
         </TabsContent>
         <TabsContent value='saved'>
           <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-            {draftPosts?.map((post) => (
-              <PostCard key={post._id} post={post} />
-            ))}
+            {draftPosts?.map((post) => <PostCard key={post._id} post={post} />)}
           </div>
         </TabsContent>
       </Tabs>
