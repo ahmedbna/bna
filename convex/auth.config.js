@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: 'https://sharp-panda-35.clerk.accounts.dev',
+      domain: process.env.NEXT_PUBLIC_CONVEX_CLERK_ISSUER,
       applicationID: 'convex',
     },
   ],
