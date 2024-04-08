@@ -4,7 +4,6 @@ import { PostPage } from '@/components/post/poat-page';
 import { Id } from '@/convex/_generated/dataModel';
 import { api } from '@/convex/_generated/api';
 import { Block } from '@blocknote/core';
-import { getAuthToken } from '@/providers/token';
 
 type Props = {
   params: {
@@ -17,12 +16,7 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const token = await getAuthToken();
-  const post = await fetchQuery(
-    api.posts.getPostById,
-    { postId: params.id },
-    { token }
-  );
+  const post = await fetchQuery(api.posts.getPostMeta, { postId: params.id });
 
   if (!post) {
     return {
@@ -40,7 +34,7 @@ export async function generateMetadata(
     title: post.title,
     description: excerpt,
     alternates: {
-      canonical: `/package/${post.title}`,
+      canonical: `/post/${post.title}`,
     },
     openGraph: {
       title: post.title,

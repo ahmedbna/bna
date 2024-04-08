@@ -215,3 +215,16 @@ export const update = mutation({
     return args.id;
   },
 });
+
+export const getPostMeta = query({
+  args: { postId: v.id('posts') },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+
+    if (!post) {
+      throw new Error('Not found');
+    }
+
+    return post;
+  },
+});
