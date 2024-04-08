@@ -1,6 +1,6 @@
 import { insertOrUpdateBlock } from '@blocknote/core';
 import { schema } from '../schema';
-import { Calendar, Link } from 'lucide-react';
+import { Link } from 'lucide-react';
 
 // Slash menu item to insert an Alert block
 export const insertLinkPreview = (editor: typeof schema.BlockNoteEditor) => ({
