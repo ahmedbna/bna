@@ -77,19 +77,12 @@ export const saves = query({
       }
 
       if (post.isPublished) {
-        const coverUrl = post.coverImage
-          ? await ctx.storage.getUrl(post.coverImage)
-          : undefined;
-
-        const imageUrl =
-          coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
-
         const userInfo = await ctx.db
           .query('users')
           .withIndex('by_userId', (q) => q.eq('userId', post.userId))
           .first();
 
-        return { ...post, imageUrl, userInfo };
+        return { ...post, userInfo };
       } else {
         return null;
       }

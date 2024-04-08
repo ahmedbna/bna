@@ -117,9 +117,9 @@ export const PostCard = ({ post }: Props) => {
         >
           <CardContent className='p-4'>
             <div className='mb-4'>
-              {post.imageUrl ? (
+              {post.coverImage ? (
                 <Image
-                  src={post.imageUrl}
+                  src={post.coverImage}
                   width={500}
                   height={500}
                   alt='Picture of the author'

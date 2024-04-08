@@ -18,7 +18,11 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const token = await getAuthToken();
-  const post = await fetchQuery(api.posts.getPostById, { postId: params.id },  { token },);
+  const post = await fetchQuery(
+    api.posts.getPostById,
+    { postId: params.id },
+    { token }
+  );
 
   if (!post) {
     return {
@@ -45,7 +49,7 @@ export async function generateMetadata(
       siteName: post.title,
       images: [
         {
-          url: post.imageUrl as URL | string,
+          url: post.coverImage as URL | string,
           // width: image.width,
           // height: image.height,
         },
@@ -59,7 +63,7 @@ export async function generateMetadata(
       description: excerpt,
       images: [
         {
-          url: post.imageUrl as URL | string,
+          url: post.coverImage as URL | string,
           // width: image.width,
           // height: image.height,
         },

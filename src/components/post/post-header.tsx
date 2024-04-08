@@ -10,6 +10,10 @@ import { api } from '@/convex/_generated/api';
 import { UploadImage } from '../upload-image';
 import Gradient from '../gradient';
 import PostAuthor from './post-author';
+import { useEdgeStore } from '@/lib/edgestore';
+import { useUser } from '@clerk/clerk-react';
+import { SingleImageDropzone } from '../uploadImage';
+import { toast } from 'sonner';
 
 interface Props {
   isDraft: boolean;
@@ -17,10 +21,15 @@ interface Props {
 }
 
 export const PostHeader = ({ isDraft = false, post }: Props) => {
+  const { user } = useUser();
+  const { edgestore } = useEdgeStore();
+  const update = useMutation(api.posts.update);
+  const updateTitle = useMutation(api.posts.update);
+
   const inputRef = useRef<ElementRef<'textarea'>>(null);
+  const [image, setImage] = useState<File>();
   const [editingTitle, setEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState(post.title);
-  const updateTitle = useMutation(api.posts.update);
 
   const enableInput = () => {
     if (!isDraft) return;
@@ -49,15 +58,61 @@ export const PostHeader = ({ isDraft = false, post }: Props) => {
     }
   };
 
+  const handleUploadImage = async (file?: File) => {
+    if (!isDraft && post.userId !== user?.id) return null;
+    if (!file) return null;
+
+    if (post.coverImage) {
+      const response = await edgestore.publicFiles.upload({
+        file,
+        options: {
+          replaceTargetUrl: post.coverImage,
+        },
+      });
+
+      const promise = update({
+        id: post._id,
+        coverImage: response.url,
+      });
+
+      toast.promise(promise, {
+        loading: 'Uploading image...',
+        success: 'Image uploaded!',
+        error: 'Something went wrong',
+      });
+    } else {
+      const response = await edgestore.publicFiles.upload({ file });
+
+      const promise = update({
+        id: post._id,
+        coverImage: response.url,
+      });
+
+      toast.promise(promise, {
+        loading: 'Uploading image...',
+        success: 'Image uploaded!',
+        error: 'Something went wrong',
+      });
+    }
+  };
+
   return (
     <div className='w-full'>
-      {isDraft && post.imageUrl === undefined ? (
-        <UploadImage postId={post._id} />
-      ) : !post.imageUrl ? (
+      {isDraft && post.coverImage === undefined ? (
+        <SingleImageDropzone
+          // width={200}
+          height={200}
+          value={image}
+          onChange={(file) => {
+            setImage(file);
+            handleUploadImage(file);
+          }}
+        />
+      ) : !post.coverImage ? (
         <Gradient color1={post.color1} color2={post.color2} height={110} />
       ) : (
         <Image
-          src={post.imageUrl!}
+          src={post.coverImage!}
           width={1000}
           height={400}
           alt='Picture of the author'
