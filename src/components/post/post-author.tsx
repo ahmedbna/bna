@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/dialog';
 import { SharePost } from './share-post';
 import { Comments } from './comments';
+import Image from 'next/image';
 
 interface Props {
   post: Doc<'posts'>;
@@ -202,10 +203,10 @@ export default function PostAuthor({ post }: Props) {
               variant='outline'
               onClick={handleLikePost}
               disabled={!isAuthenticated}
-              className='rounded-lg gap-1'
+              className='rounded-lg gap-1 flex items-center'
             >
               <p className={`text-base ${isLikedByYou ? '' : 'grayscale'}`}>
-                {'🔥'}
+                <Image src='/ignite.png' height='14' width='14' alt='Ignite' />
               </p>
               <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
             </Button>

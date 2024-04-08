@@ -90,6 +90,8 @@ export const saves = query({
           .first();
 
         return { ...post, imageUrl, userInfo };
+      } else {
+        return null;
       }
     });
   },

@@ -39,7 +39,7 @@ export const UserCard = ({ userInfo }: Props) => {
           </AvatarFallback>
         </Avatar>
         <div className='ml-2'>
-          <p className='text-xs text-muted-foreground'>Title</p>
+          <p className='text-xs text-muted-foreground'>{userInfo?.heading}</p>
           <p className='text-sm font-medium leading-none'>{userInfo?.name}</p>
         </div>
       </Link>

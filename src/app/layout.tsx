@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/resizable';
 import '@/styles/globals.css';
 import '@mantine/core/styles.css';
+import { Header } from '@/components/header';
 
 const inter = Inter({ subsets: ['latin'] });
 

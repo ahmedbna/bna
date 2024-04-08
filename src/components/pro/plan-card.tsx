@@ -61,6 +61,9 @@ export const PlanCard = () => {
               </span>
             </li>
             <li className='flex items-center justify-between'>
+              <span className='text-muted-foreground'>Text to Podcast</span>
+            </li>
+            <li className='flex items-center justify-between'>
               <span className='text-muted-foreground'>
                 Voice & tone adjustment
               </span>

@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { UserCard } from './user-card';
+import EmptyPage from './empty-page';
 
 type Props = {
   title: string;
@@ -33,13 +34,18 @@ export function FollowersModal({ title, follows }: Props) {
           <DialogTitle className='text-start mb-4'>{title}</DialogTitle>
         </DialogHeader>
         <div className='max-h-[400px] rounded-lg overflow-y-auto'>
-          {follows?.length
-            ? follows.map((follow: any) => (
-                <div key={follow._id} className='mb-2'>
-                  <UserCard userInfo={follow.userInfo} />
-                </div>
-              ))
-            : null}
+          {follows?.length ? (
+            follows.map((follow: any) => (
+              <div key={follow._id} className='mb-2'>
+                <UserCard userInfo={follow.userInfo} />
+              </div>
+            ))
+          ) : (
+            <EmptyPage
+              title={`No ${title}`}
+              description='Expand your network'
+            />
+          )}
         </div>
         <DialogFooter className='mt-4'>
           <DialogClose asChild>

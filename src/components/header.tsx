@@ -25,7 +25,7 @@ export const Header = () => {
       )}
     >
       <Link href='/' className='flex items-start justify-start gap-x-2'>
-        <Image src='/ignite.png' height='22' width='22' alt='Logo' />
+        <Image src='/ignite.png' height='22' width='22' alt='BNA' />
         <p className='text-2xl font-black '>BNA</p>
       </Link>
       <div className='ml-auto justify-end w-full flex items-center'>

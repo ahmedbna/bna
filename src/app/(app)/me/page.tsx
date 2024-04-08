@@ -6,8 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { SignOutButton, useUser } from '@clerk/clerk-react';
-import { Button } from '@/components/ui/button';
+import { useUser } from '@clerk/clerk-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PostCard } from '@/components/post';
 import { useQuery } from 'convex/react';
@@ -15,70 +14,93 @@ import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
 import { NewPost } from '@/components/post/new-post';
-import { LogOut } from 'lucide-react';
 import { FollowersModal } from '@/components/followers-modal';
+import { Settings } from '@/components/settings';
+import { Spinner } from '@/components/spinner';
 
 export default function Account() {
   const { user } = useUser();
 
-  const posts = useQuery(api.posts.getMyPosts);
   const saves = useQuery(api.saves.saves);
+  const posts = useQuery(api.posts.getPostsByUser, {});
   const followers = useQuery(api.follows.followers, {});
   const followings = useQuery(api.follows.followings, {});
+  const you = useQuery(api.users.get, {});
 
   const publishedPosts = posts?.filter((post) => post.isPublished);
   const draftPosts = posts?.filter((post) => !post.isPublished);
+  const savedPosts = saves?.filter((post) => post !== null);
+
+  if (you === undefined) {
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <Spinner size='lg' />
+      </div>
+    );
+  }
+
+  if (you === null) {
+    return (
+      <div className='h-screen flex items-center justify-center'>
+        <div>Not found</div>
+      </div>
+    );
+  }
 
   return (
-    <div className='h-full flex flex-col gap-16 py-14 px-8'>
+    <div className='h-full flex flex-col gap-14 py-14 px-8'>
       {/* <UserButton appearance={undefined} afterSignOutUrl='/' /> */}
 
-      <div className='flex items-end justify-between'>
-        <div className='flex items-end'>
-          <Avatar className='h-24 w-24 rounded-2xl'>
-            <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
-            <AvatarFallback>
-              {user?.firstName?.charAt(0)}
-              {user?.lastName?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          <div className='ml-4'>
-            <div className='flex items-center justify-start gap-1'>
-              <p className='text-2xl font-bold leading-none'>
-                {user?.fullName}
-              </p>
+      <div>
+        <div className='flex items-end justify-between'>
+          <div className='flex items-end'>
+            <Avatar className='h-24 w-24 rounded-2xl'>
+              <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
+              <AvatarFallback>
+                {user?.firstName?.charAt(0)}
+                {user?.lastName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className='ml-4'>
+              {you?.heading ? (
+                <p className='text-md text-muted-foreground'>{you.heading}</p>
+              ) : null}
+              <div className='flex items-center justify-start gap-1'>
+                <p className='text-2xl font-bold leading-none'>
+                  {user?.fullName}
+                </p>
 
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant='ghost' className='p-2'>
-                      <SignOutButton>
-                        <LogOut className='w-5 h-5 cursor-pointer' />
-                      </SignOutButton>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Logout</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Settings heading={you?.heading} bio={you?.bio} />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Settings</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
-            <p className='text-md text-muted-foreground'>
-              {user?.primaryEmailAddress?.emailAddress}
-            </p>
+          </div>
+
+          <div className='flex items-center gap-8'>
+            <div className='flex flex-col items-center'>
+              <p className='text-2xl font-bold leading-none'>
+                {publishedPosts?.length
+                  ? publishedPosts?.length.toString()
+                  : '0'}
+              </p>
+              <p className='text-md text-muted-foreground mt-2'>Posts</p>
+            </div>
+            <FollowersModal title='Followers' follows={followers} />
+            <FollowersModal title='Following' follows={followings} />
           </div>
         </div>
 
-        <div className='flex items-center gap-8'>
-          <div className='flex flex-col items-center'>
-            <p className='text-2xl font-bold leading-none'>
-              {publishedPosts?.length ? publishedPosts?.length.toString() : '0'}
-            </p>
-            <p className='text-md text-muted-foreground mt-2'>Posts</p>
-          </div>
-          <FollowersModal title='Followers' follows={followers} />
-          <FollowersModal title='Following' follows={followings} />
-        </div>
+        {you?.bio ? (
+          <p className='text-md text-muted-foreground mt-4'>{you.bio}</p>
+        ) : null}
       </div>
 
       <Tabs defaultValue='draft'>
@@ -118,9 +140,9 @@ export default function Account() {
           )}
         </TabsContent>
         <TabsContent value='saved'>
-          {saves?.length ? (
+          {savedPosts?.length ? (
             <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
-              {saves.map((post) => (
+              {savedPosts.map((post) => (
                 <PostCard key={post?._id} post={post!} />
               ))}
             </div>

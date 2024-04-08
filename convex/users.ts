@@ -1,4 +1,5 @@
-import { mutation } from './_generated/server';
+import { v } from 'convex/values';
+import { mutation, query } from './_generated/server';
 
 /**
  * Insert or update the user in a Convex table then return the document's ID.
@@ -54,5 +55,55 @@ export const store = mutation({
       pictureUrl: identity.pictureUrl!,
       tokenIdentifier: identity.tokenIdentifier,
     });
+  },
+});
+
+export const update = mutation({
+  args: {
+    heading: v.optional(v.string()),
+    bio: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Not authenticated!');
+    }
+
+    // Check if we've already stored this identity before.
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_userId', (q) => q.eq('userId', identity.subject))
+      .unique();
+
+    if (user !== null) {
+      await ctx.db.patch(user._id, {
+        heading: args.heading,
+        bio: args.bio,
+      });
+
+      return user._id;
+    }
+  },
+});
+
+export const get = query({
+  args: {
+    userId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Not authenticated!');
+    }
+
+    const userId = args.userId ? args.userId : identity.subject;
+
+    // Check if we've already stored this identity before.
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_userId', (q) => q.eq('userId', userId))
+      .unique();
+
+    return user;
   },
 });

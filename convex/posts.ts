@@ -31,13 +31,16 @@ export const get = query({
   },
 });
 
-export const getMyPosts = query({
-  handler: async (ctx) => {
+export const getPostsByUser = query({
+  args: {
+    userId: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
       throw new Error('Not authenticated');
     }
-    const userId = identity.subject;
+    const userId = args.userId ? args.userId : identity.subject;
 
     const posts = await ctx.db
       .query('posts')
@@ -79,7 +82,6 @@ export const getPostById = query({
       throw new Error('Not found');
     }
 
-    // if (post.isPublished) {
     const coverUrl = post.coverImage
       ? await ctx.storage.getUrl(post.coverImage)
       : undefined;
@@ -93,50 +95,8 @@ export const getPostById = query({
       .first();
 
     return { ...post, imageUrl, userInfo };
-    // } else {
-    //   return null;
-    // }
   },
 });
-
-// export const getMyDraftById = query({
-//   args: { postId: v.id('posts') },
-//   handler: async (ctx, args) => {
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error('Not authenticated');
-//     }
-//     const userId = identity.subject;
-
-//     const post = await ctx.db.get(args.postId);
-
-//     if (!post) {
-//       throw new Error('Not found');
-//     }
-
-//     if (post.userId !== userId) {
-//       throw new Error('Unauthorized');
-//     }
-
-//     if (!post.isPublished) {
-//       const coverUrl = post.coverImage
-//         ? await ctx.storage.getUrl(post.coverImage)
-//         : undefined;
-
-//       const imageUrl =
-//         coverUrl === null || coverUrl === undefined ? undefined : coverUrl;
-
-//       const userInfo = await ctx.db
-//         .query('users')
-//         .withIndex('by_userId', (q) => q.eq('userId', post.userId))
-//         .first();
-
-//       return { ...post, imageUrl, userInfo };
-//     } else {
-//       return null;
-//     }
-//   },
-// });
 
 export const getMyPublishById = query({
   args: { postId: v.id('posts') },
@@ -240,8 +200,8 @@ export const searchPosts = query({
     const posts = await ctx.db
       .query('posts')
       .withSearchIndex('search_title', (q) => q.search('title', args.query))
-      .filter((q) => q.eq(q.field('isPublished'), false))
-      .take(20);
+      .filter((q) => q.eq(q.field('isPublished'), true))
+      .take(10);
 
     return posts;
   },

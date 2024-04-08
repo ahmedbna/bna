@@ -38,13 +38,5 @@ export const postlikes = query({
       .collect();
 
     return likes;
-
-    // return await asyncMap(likes, async (like) => {
-    //   const usersLikes = await ctx.db
-    //     .query('users')
-    //     .withIndex('by_userId', (q) => q.eq('userId', like.userId));
-
-    //   return usersLikes;
-    // });
   },
 });

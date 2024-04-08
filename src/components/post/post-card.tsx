@@ -152,23 +152,20 @@ export const PostCard = ({ post }: Props) => {
             size='sm'
             variant='outline'
             onClick={handleLikePost}
-            disabled={!isAuthenticated}
-            className='rounded-lg gap-1'
+            disabled={!isAuthenticated || !post.isPublished}
+            className='rounded-lg gap-1 flex items-center'
           >
             <p className={`text-base ${isLikedByYou ? '' : 'grayscale'}`}>
-              {'🔥'}
+              <Image src='/ignite.png' height='14' width='14' alt='Ignite' />
             </p>
             <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
           </Button>
 
-          <Link
-            href={`/post/${post._id}`}
-            className={!isAuthenticated ? 'gray-scale' : ''}
-          >
+          {!post.isPublished ? (
             <Button
               size='sm'
               variant='outline'
-              disabled={!isAuthenticated}
+              disabled={!isAuthenticated || !post.isPublished}
               className='rounded-lg gap-1'
             >
               <MessageCircle className='w-5 h-5' />
@@ -176,7 +173,26 @@ export const PostCard = ({ post }: Props) => {
                 {commentsCount?.length ? commentsCount.length.toString() : '0'}
               </p>
             </Button>
-          </Link>
+          ) : (
+            <Link
+              href={`/post/${post._id}`}
+              className={!isAuthenticated ? 'gray-scale' : ''}
+            >
+              <Button
+                size='sm'
+                variant='outline'
+                disabled={!isAuthenticated || !post.isPublished}
+                className='rounded-lg gap-1'
+              >
+                <MessageCircle className='w-5 h-5' />
+                <p>
+                  {commentsCount?.length
+                    ? commentsCount.length.toString()
+                    : '0'}
+                </p>
+              </Button>
+            </Link>
+          )}
 
           <Button
             size='sm'
