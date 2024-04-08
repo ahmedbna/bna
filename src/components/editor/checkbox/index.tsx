@@ -20,7 +20,7 @@ export const CheckboxBlock = createReactBlockSpec(
       return (
         <div className='flex items-center justify-center flex-grow gap-2'>
           <Checkbox
-            disabled={props.editor.isEditable}
+            disabled={!props.editor.isEditable}
             checked={props.block.props.isCheck}
             onCheckedChange={(checked: boolean) =>
               props.editor.updateBlock(props.block, {
