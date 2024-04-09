@@ -96,7 +96,7 @@ export const PlanCard = () => {
       </CardContent>
       <CardFooter className='flex flex-row items-center justify-between  border-t bg-muted/50 px-6 py-3'>
         <div className='text-xs text-muted-foreground'>Coming soon</div>
-        <div className='text-xs text-muted-foreground'>{`$9/month`}</div>
+        <div className='text-xs text-muted-foreground'>{`$$/month`}</div>
       </CardFooter>
     </Card>
   );

@@ -5,15 +5,9 @@ import { Toaster } from '@/components/ui/sonner';
 import { Inter } from 'next/font/google';
 import { SearchCommand } from '@/components/search';
 import { EdgeStoreProvider } from '@/lib/edgestore';
-import { Sidebar } from '@/components/sidebar';
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable';
 import '@/styles/globals.css';
 import '@mantine/core/styles.css';
-import { Header } from '@/components/header';
+import { Home } from '@/components/home-layout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -107,19 +101,7 @@ export default function RootLayout({
             >
               <SearchCommand />
 
-              <ResizablePanelGroup direction='horizontal'>
-                <ResizablePanel defaultSize={20}>
-                  <Sidebar />
-                </ResizablePanel>
-                <ResizableHandle />
-                <ResizablePanel>
-                  <div className='flex h-full items-center justify-center'>
-                    <main className='h-full w-full overflow-y-auto'>
-                      {children}
-                    </main>
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+              <Home>{children}</Home>
 
               <Toaster position='top-center' />
             </ThemeProvider>
