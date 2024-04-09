@@ -52,7 +52,7 @@ export default function Account() {
       {/* <UserButton appearance={undefined} afterSignOutUrl='/' /> */}
 
       <div>
-        <div className='flex items-end justify-between'>
+        <div className='flex flex-col md:flex-row md:items-end justify-between gap-8 md:gap-4'>
           <div className='flex items-end'>
             <Avatar className='h-24 w-24 rounded-2xl'>
               <AvatarImage src={user?.imageUrl} alt={user?.fullName || ''} />
@@ -84,7 +84,7 @@ export default function Account() {
             </div>
           </div>
 
-          <div className='flex items-center gap-8'>
+          <div className='flex items-center justify-between md:justify-normal  gap-8'>
             <div className='flex flex-col items-center'>
               <p className='text-2xl font-bold leading-none'>
                 {publishedPosts?.length

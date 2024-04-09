@@ -157,7 +157,7 @@ export default function PostAuthor({ post }: Props) {
   };
 
   return (
-    <div className='flex items-end justify-between'>
+    <div className='flex flex-col md:flex-row md:items-end justify-between gap-2'>
       <div className='flex items-center justify-start gap-4'>
         <Link
           href={`${
