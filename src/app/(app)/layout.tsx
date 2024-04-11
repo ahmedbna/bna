@@ -1,8 +1,9 @@
 'use client';
 
-import { redirect } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useConvexAuth } from 'convex/react';
 import { Spinner } from '@/components/spinner';
+import { SignIn } from '@clerk/clerk-react';
 import useStoreUserEffect from '@/lib/useStoreUserEffect';
 
 export default function RootLayout({
@@ -10,8 +11,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
   const userId = useStoreUserEffect();
   const { isLoading, isAuthenticated } = useConvexAuth();
+
+  if (!isLoading && !isAuthenticated) {
+    return (
+      <div className='h-full flex items-center justify-center'>
+        <SignIn redirectUrl={pathname} />
+      </div>
+    );
+  }
 
   if (userId === null) {
     // Storing User
@@ -29,10 +39,6 @@ export default function RootLayout({
         <Spinner size='lg' />
       </div>
     );
-  }
-
-  if (!isAuthenticated) {
-    return redirect('/');
   }
 
   return <div>{children}</div>;

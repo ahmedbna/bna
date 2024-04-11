@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     //   app_name: 'app_name_android',
     // },
     web: {
-      url: 'https://ahmedbna.com/',
+      url: 'https://www.ahmedbna.com/',
       should_fallback: true,
     },
   },
