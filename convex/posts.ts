@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { asyncMap } from 'convex-helpers';
+import { getAll } from 'convex-helpers/server/relationships';
 import randomColor from 'randomcolor';
 
 export const get = query({
@@ -17,9 +18,12 @@ export const get = query({
         .withIndex('by_userId', (q) => q.eq('userId', post.userId))
         .first();
 
+      const clubs = post.clubs ? await getAll(ctx.db, post.clubs) : [];
+
       return {
         ...post,
         userInfo,
+        clubs,
       };
     });
   },
@@ -48,9 +52,12 @@ export const getPostsByUser = query({
         .withIndex('by_userId', (q) => q.eq('userId', post.userId))
         .first();
 
+      const clubs = post.clubs ? await getAll(ctx.db, post.clubs) : [];
+
       return {
         ...post,
         userInfo,
+        clubs,
       };
     });
   },
@@ -75,7 +82,13 @@ export const getPostById = query({
       .withIndex('by_userId', (q) => q.eq('userId', post.userId))
       .first();
 
-    return { ...post, userInfo };
+    const clubs = post.clubs ? await getAll(ctx.db, post.clubs) : [];
+
+    return {
+      ...post,
+      userInfo,
+      clubs,
+    };
   },
 });
 

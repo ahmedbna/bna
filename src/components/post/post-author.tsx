@@ -41,7 +41,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SharePost } from './share-post';
-import { Comments } from './comments';
+import { CommentsDrawer } from './comments-drawer';
 import Image from 'next/image';
 
 interface Props {
@@ -210,7 +210,7 @@ export default function PostAuthor({ post }: Props) {
               </p>
               <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
             </Button>
-            <Comments post={post} size='default' />
+            <CommentsDrawer post={post} size='default' />
             <Button
               variant='outline'
               onClick={handleSavePost}

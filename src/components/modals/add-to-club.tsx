@@ -28,47 +28,47 @@ import { Cog } from 'lucide-react';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { toast } from 'sonner';
-import { Textarea } from './ui/textarea';
-import { Spinner } from './spinner';
-import { Doc } from '@/convex/_generated/dataModel';
+import { Textarea } from '../ui/textarea';
+import { Spinner } from '../spinner';
+import { generateSlug } from '@/lib/generate-slug';
+import { Id } from '@/convex/_generated/dataModel';
 
 const FormSchema = z.object({
-  heading: z.string().min(3, {
-    message: 'Heading must be at least 3 characters.',
-  }),
-  bio: z.string().min(3, {
-    message: 'Bio must be at least 3 characters.',
+  name: z.string().min(3, {
+    message: 'Club name must be at least 3 characters.',
   }),
 });
 
 type Props = {
-  heading?: string;
-  bio?: string;
+  postId: Id<'posts'>;
 };
 
-export const Settings = ({ heading, bio }: Props) => {
+export const AddToClub = ({ postId }: Props) => {
   const [open, setOpen] = useState(false);
-  const update = useMutation(api.users.update);
+  const create = useMutation(api.clubs.create);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      heading: heading || '',
-      bio: bio || '',
+      name: '',
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const promise = update({
-      heading: data.heading,
-      bio: data.bio,
+    const slug = generateSlug(data.name);
+
+    const promise = create({
+      name: data.name,
+      slug: slug,
+      postId: postId,
     }).finally(() => {
+      form.setValue('name', '');
       setOpen(false);
     });
 
     toast.promise(promise, {
-      loading: 'Updating profile...',
-      success: 'Profile Updated!',
+      loading: 'Adding to club...',
+      success: 'Added to club!',
       error: 'Something went wrong',
     });
   }
@@ -76,55 +76,33 @@ export const Settings = ({ heading, bio }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant='ghost' className='p-2'>
-          <Cog className='w-5 h-5 cursor-pointer' />
-        </Button>
+        <Button variant='outline'>Add To Club</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          {/* <UserButton afterSignOutUrl='/' /> */}
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Add To Club</DialogTitle>
           <DialogDescription>
-            Add heading and bio to your profile.
+            Write a club name then click add to club
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className=' space-y-4'>
             <FormField
               control={form.control}
-              name='heading'
+              name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Heading</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder='JavaScript Developer' {...field} />
+                    <Input placeholder='Club Name' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='bio'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Bio</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='Tell us a little bit about yourself'
-                      className='resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter className='w-full flex items-center sm:justify-between '>
-              <Button variant='destructive'>
-                <SignOutButton>Logout</SignOutButton>
-              </Button>
-              <Button type='submit'>Update Profile</Button>
+
+            <DialogFooter>
+              <Button type='submit'>Add To Club</Button>
             </DialogFooter>
           </form>
         </Form>

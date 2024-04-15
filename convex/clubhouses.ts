@@ -2,10 +2,11 @@ import { v } from 'convex/values';
 import { mutation, query } from './_generated/server';
 import { asyncMap } from 'convex-helpers';
 
-export const comment = mutation({
+export const create = mutation({
   args: {
-    postId: v.id('posts'),
+    clubSlug: v.string(),
     content: v.string(),
+    contentType: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -14,19 +15,20 @@ export const comment = mutation({
     }
     const userId = identity.subject;
 
-    const comment = await ctx.db.insert('comments', {
+    const comment = await ctx.db.insert('clubhouses', {
       userId: userId,
-      postId: args.postId,
+      clubSlug: args.clubSlug,
       content: args.content,
+      contentType: args.contentType,
     });
 
     return comment;
   },
 });
 
-export const deletComment = mutation({
+export const deleteComment = mutation({
   args: {
-    commentId: v.id('comments'),
+    commentId: v.id('clubhouses'),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -50,23 +52,23 @@ export const deletComment = mutation({
   },
 });
 
-export const commentsCount = query({
-  args: {
-    postId: v.id('posts'),
-  },
-  handler: async (ctx, args) => {
-    const comments = await ctx.db
-      .query('comments')
-      .withIndex('by_postId', (q) => q.eq('postId', args.postId))
-      .collect();
+// export const commentsCount = query({
+//   args: {
+//     clubSlug: v.string(),
+//   },
+//   handler: async (ctx, args) => {
+//     const comments = await ctx.db
+//       .query('comments')
+//       .withIndex('by_postId', (q) => q.eq('postId', args.postId))
+//       .collect();
 
-    return comments;
-  },
-});
+//     return comments;
+//   },
+// });
 
-export const postComments = query({
+export const clubComments = query({
   args: {
-    postId: v.id('posts'),
+    clubSlug: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -75,8 +77,8 @@ export const postComments = query({
     }
 
     const comments = await ctx.db
-      .query('comments')
-      .withIndex('by_postId', (q) => q.eq('postId', args.postId))
+      .query('clubhouses')
+      .withIndex('by_clubSlug', (q) => q.eq('clubSlug', args.clubSlug))
       .collect();
 
     return await asyncMap(comments, async (comment) => ({

@@ -41,5 +41,5 @@ export default function RootLayout({
     );
   }
 
-  return <div>{children}</div>;
+  return <div className='h-full w-full'>{children}</div>;
 }

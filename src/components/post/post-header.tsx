@@ -14,6 +14,9 @@ import { useEdgeStore } from '@/lib/edgestore';
 import { useUser } from '@clerk/clerk-react';
 import { SingleImageDropzone } from '../uploadImage';
 import { toast } from 'sonner';
+import { AddToClub } from '../modals/add-to-club';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface Props {
   isDraft: boolean;
@@ -141,6 +144,18 @@ export const PostHeader = ({ isDraft = false, post }: Props) => {
             {post.title}
           </h1>
         )}
+
+        <div>
+          {post.clubs?.length
+            ? post.clubs.map((club) => (
+                <Button asChild variant='outline'>
+                  <Link href={`/club/${club.slug}`}>{club.name}</Link>
+                </Button>
+              ))
+            : null}
+
+          {post.userId === user?.id ? <AddToClub postId={post._id} /> : null}
+        </div>
 
         {/* <p className='text-[#cfcfcf]'>{post.excerpt}</p> */}
         {/* <Emoji onChange={() => {}}>

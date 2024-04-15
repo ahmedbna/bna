@@ -11,6 +11,8 @@ export default defineSchema({
     coverImage: v.optional(v.string()),
     isPublished: v.boolean(),
     publishedAt: v.optional(v.string()),
+    // clubs: v.optional(v.array(v.id('clubs'))),
+    clubs: v.optional(v.array(v.any())),
     userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
@@ -54,6 +56,7 @@ export default defineSchema({
     userId: v.string(),
     postId: v.id('posts'),
     content: v.string(),
+    userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
     .index('by_postId', ['postId']),
@@ -76,7 +79,17 @@ export default defineSchema({
   clubs: defineTable({
     name: v.string(),
     slug: v.string(),
-    posts: v.optional(v.array(v.id('posts'))),
+    posts: v.array(v.id('posts')),
     followerIds: v.optional(v.array(v.string())),
-  }).index('by_name', ['name']),
+  })
+    .index('by_name', ['name'])
+    .index('by_slug', ['slug']),
+
+  clubhouses: defineTable({
+    userId: v.string(),
+    clubSlug: v.string(),
+    content: v.string(),
+    contentType: v.string(),
+    userInfo: v.optional(v.any()),
+  }).index('by_clubSlug', ['clubSlug']),
 });

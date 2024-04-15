@@ -8,9 +8,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -21,10 +19,8 @@ import { MessageCircle } from 'lucide-react';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
@@ -44,7 +40,7 @@ type Props = {
   post: Doc<'posts'>;
 };
 
-export const Comments = ({ size = 'sm', post }: Props) => {
+export const CommentsDrawer = ({ size = 'sm', post }: Props) => {
   const { user } = useUser();
   const comment = useMutation(api.comments.comment);
   const commentsCount = useQuery(api.comments.commentsCount, {

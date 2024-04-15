@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
 import { NewPost } from '@/components/post/new-post';
 import { FollowersModal } from '@/components/followers-modal';
-import { Settings } from '@/components/settings';
+import { Settings } from '@/components/modals/settings';
 import { Spinner } from '@/components/spinner';
 
 export default function Account() {

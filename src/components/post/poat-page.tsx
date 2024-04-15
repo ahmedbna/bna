@@ -24,6 +24,8 @@ export const PostPage = ({ postId, isDraft, editable }: Props) => {
     postId,
   });
 
+  console.log(post);
+
   const Editor = useMemo(
     () => dynamic(() => import('@/components/editor'), { ssr: false }),
     []
