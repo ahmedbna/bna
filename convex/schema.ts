@@ -85,6 +85,15 @@ export default defineSchema({
     .index('by_name', ['name'])
     .index('by_slug', ['slug']),
 
+  clubguests: defineTable({
+    userId: v.string(),
+    clubSlug: v.string(),
+    clubId: v.id('clubs'),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_clubSlug', ['clubSlug'])
+    .index('by_clubId', ['clubId']),
+
   clubhouses: defineTable({
     userId: v.string(),
     clubSlug: v.string(),
@@ -93,4 +102,13 @@ export default defineSchema({
     userInfo: v.optional(v.any()),
     parentId: v.optional(v.id('clubhouses')),
   }).index('by_clubSlug', ['clubSlug']),
+
+  clubhouseguests: defineTable({
+    userId: v.string(),
+    clubSlug: v.string(),
+    clubId: v.id('clubs'),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_clubSlug', ['clubSlug'])
+    .index('by_clubId', ['clubId']),
 });

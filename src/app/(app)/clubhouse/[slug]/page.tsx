@@ -48,12 +48,15 @@ export default function Clubhouse({ params }: Props) {
   const [parentComment, setParentComment] = useState<
     Doc<'clubhouses'> | undefined
   >(undefined);
+
   const club = useQuery(api.clubs.get, { slug: clubSlug });
+  const members = useQuery(api.clubguests.members, { clubSlug: clubSlug });
   const clubComments = useQuery(api.clubhouses.clubComments, { clubSlug });
+
+  const discussion = clubComments ? getReplies(clubComments) : [];
+
   const comment = useMutation(api.clubhouses.create);
   const reply = useMutation(api.clubhouses.reply);
-
-  const replies = clubComments ? getReplies(clubComments) : clubComments;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -82,12 +85,24 @@ export default function Clubhouse({ params }: Props) {
   return (
     <div className='h-full flex flex-col gap-2'>
       <div className='flex items-center bg-muted/50 py-6  px-8'>
-        <p className='font-bold text-4xl'>{`${club?.name} Clubhouse`}</p>
+        <div>
+          <p className='font-bold text-4xl'>{`${club?.name} Clubhouse`}</p>
+          <p className='text text-muted-foreground mt-2'>
+            {`${members?.length} ${members?.length === 1 ? 'Member' : 'Members'}`}
+          </p>
+        </div>
       </div>
       <div className='flex-1 overflow-y-auto px-8 '>
-        {replies ? (
-          <Comments comments={replies} setParentComment={setParentComment} />
-        ) : null}
+        {discussion.length ? (
+          <Comments comments={discussion} setParentComment={setParentComment} />
+        ) : (
+          <EmptyPage
+            title='Start Discussion'
+            description='Write the first comment'
+          >
+            Be the first to start a discussion for this clubhouse
+          </EmptyPage>
+        )}
       </div>
       <Form {...form}>
         <form

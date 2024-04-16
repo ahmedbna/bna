@@ -14,6 +14,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as clubguests from "../clubguests.js";
+import type * as clubhouseguests from "../clubhouseguests.js";
 import type * as clubhouses from "../clubhouses.js";
 import type * as clubs from "../clubs.js";
 import type * as comments from "../comments.js";
@@ -34,6 +36,8 @@ import type * as waitings from "../waitings.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  clubguests: typeof clubguests;
+  clubhouseguests: typeof clubhouseguests;
   clubhouses: typeof clubhouses;
   clubs: typeof clubs;
   comments: typeof comments;

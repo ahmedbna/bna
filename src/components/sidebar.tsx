@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Header } from './header';
 import { NewPost } from './post/new-post';
 import { ProPlan } from './pro/pro-plan';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Spinner } from './spinner';
+import { Doc } from '@/convex/_generated/dataModel';
+import { useRouter } from 'next/navigation';
 
 export const Sidebar = () => {
+  const router = useRouter();
   const clubs = useQuery(api.clubs.getClubs);
+  const join = useMutation(api.clubguests.join);
 
   if (clubs === undefined) {
     return (
@@ -28,6 +32,14 @@ export const Sidebar = () => {
   //   );
   // }
 
+  const handleJoinClub = (club: Doc<'clubs'>) => {
+    const promise = join({ clubId: club._id, clubSlug: club.slug }).finally(
+      () => {
+        router.push(`/club/${club.slug}`);
+      }
+    );
+  };
+
   return (
     <div className='h-full'>
       <Header />
@@ -41,12 +53,12 @@ export const Sidebar = () => {
           <div className='space-y-1 p-2'>
             {clubs?.map((club) => (
               <Button
-                asChild
                 key={club._id}
                 variant='ghost'
+                onClick={() => handleJoinClub(club)}
                 className='w-full items-center justify-start font-normal'
               >
-                <Link href={`/club/${club.slug}`}>{club.name}</Link>
+                {club.name}
               </Button>
             ))}
           </div>

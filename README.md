@@ -3,9 +3,9 @@
 ## TODO
 
 - [x] Reply to a comment
-- [ ] Audio comment
 - [x] Clubs sidebar
-- [ ] Club users
-- [ ] Clubhouse users
-- [ ] React to a comment with emoji
+- [x] Club users
+- [x] Clubhouse users
 - [ ] Remove a club from post
+- [ ] React to a comment with emoji
+- [ ] Audio comment
