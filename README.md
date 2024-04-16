@@ -6,6 +6,6 @@
 - [x] Clubs sidebar
 - [x] Club users
 - [x] Clubhouse users
-- [ ] Remove a club from post
+- [x] Remove a club from post
 - [ ] React to a comment with emoji
 - [ ] Audio comment

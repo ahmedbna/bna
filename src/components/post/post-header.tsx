@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { AddToClub } from '../modals/add-to-club';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { X } from 'lucide-react';
 
 interface Props {
   isDraft: boolean;
@@ -28,6 +29,7 @@ export const PostHeader = ({ isDraft = false, post }: Props) => {
   const { edgestore } = useEdgeStore();
   const update = useMutation(api.posts.update);
   const updateTitle = useMutation(api.posts.update);
+  const removeClub = useMutation(api.clubs.remove);
 
   const inputRef = useRef<ElementRef<'textarea'>>(null);
   const [image, setImage] = useState<File>();
@@ -99,6 +101,19 @@ export const PostHeader = ({ isDraft = false, post }: Props) => {
     }
   };
 
+  const handleRemoveClub = (club: Doc<'clubs'>) => {
+    const promise = removeClub({
+      postId: post._id,
+      clubId: club._id,
+    });
+
+    toast.promise(promise, {
+      loading: 'Removing club...',
+      success: 'Club removed!',
+      error: 'Something went wrong',
+    });
+  };
+
   return (
     <div className='w-full'>
       {isDraft && post.coverImage === undefined ? (
@@ -145,12 +160,28 @@ export const PostHeader = ({ isDraft = false, post }: Props) => {
           </h1>
         )}
 
-        <div>
+        <div className='flex items-center gap-2'>
           {post.clubs?.length
-            ? post.clubs.map((club) => (
-                <Button asChild variant='outline'>
-                  <Link href={`/club/${club.slug}`}>{club.name}</Link>
-                </Button>
+            ? post.clubs.map((club: Doc<'clubs'>) => (
+                <div key={club._id} className='flex items-center'>
+                  <Button
+                    asChild
+                    variant='outline'
+                    className={post.userId === user?.id ? 'rounded-r-none' : ''}
+                  >
+                    <Link href={`/club/${club.slug}`}>{club.name}</Link>
+                  </Button>
+
+                  {post.userId === user?.id ? (
+                    <Button
+                      variant='destructive'
+                      className='rounded-l-none'
+                      onClick={() => handleRemoveClub(club)}
+                    >
+                      <X className='w-4 h-4' />
+                    </Button>
+                  ) : null}
+                </div>
               ))
             : null}
 

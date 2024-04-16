@@ -139,3 +139,34 @@ export const create = mutation({
     }
   },
 });
+
+export const remove = mutation({
+  args: {
+    clubId: v.id('clubs'),
+    postId: v.id('posts'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Unauthenticated');
+    }
+    const userId = identity.subject;
+
+    const post = await ctx.db.get(args.postId);
+    const club = await ctx.db.get(args.clubId);
+
+    if (!post || !club) {
+      throw new Error('Not found');
+    }
+
+    if (post.userId !== userId) {
+      throw new Error('Unauthorized');
+    }
+
+    const postClubs = post.clubs?.filter((clubId) => clubId !== args.clubId);
+    const clubPosts = club.posts?.filter((postId) => postId !== args.postId);
+
+    await ctx.db.patch(args.postId, { clubs: postClubs });
+    await ctx.db.patch(args.clubId, { posts: clubPosts });
+  },
+});
