@@ -91,5 +91,6 @@ export default defineSchema({
     content: v.string(),
     contentType: v.string(),
     userInfo: v.optional(v.any()),
+    parentId: v.optional(v.id('clubhouses')),
   }).index('by_clubSlug', ['clubSlug']),
 });

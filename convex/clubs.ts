@@ -3,6 +3,14 @@ import { mutation, query } from './_generated/server';
 import { asyncMap } from 'convex-helpers';
 import { getAll } from 'convex-helpers/server/relationships';
 
+export const getClubs = query({
+  handler: async (ctx) => {
+    const clubs = await ctx.db.query('clubs').collect();
+
+    return clubs;
+  },
+});
+
 export const get = query({
   args: {
     slug: v.string(),

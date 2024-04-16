@@ -17,17 +17,28 @@ import { toast } from 'sonner';
 import { ImageUp } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { Doc } from '@/convex/_generated/dataModel';
 
 type Props = {
   clubSlug: string;
+  parentComment: Doc<'clubhouses'> | undefined;
+  setParentComment: React.Dispatch<
+    React.SetStateAction<Doc<'clubhouses'> | undefined>
+  >;
 };
 
-export const SendImage = ({ clubSlug }: Props) => {
+export const SendImage = ({
+  clubSlug,
+  parentComment,
+  setParentComment,
+}: Props) => {
   const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [file, setFile] = useState<File | undefined>(undefined);
   const { edgestore } = useEdgeStore();
+
   const comment = useMutation(api.clubhouses.create);
+  const reply = useMutation(api.clubhouses.reply);
 
   const handleSendImage = () => {
     setDisabled(true);
@@ -41,16 +52,26 @@ export const SendImage = ({ clubSlug }: Props) => {
           },
         })
         .then((res) => {
-          comment({
-            clubSlug: clubSlug,
-            content: res.url,
-            contentType: 'image',
-          });
+          if (parentComment) {
+            reply({
+              clubSlug: clubSlug,
+              content: res.url,
+              contentType: 'image',
+              parentId: parentComment._id,
+            });
+          } else {
+            comment({
+              clubSlug: clubSlug,
+              content: res.url,
+              contentType: 'image',
+            });
+          }
         })
         .finally(() => {
           setFile(undefined);
           setOpen(false);
           setDisabled(false);
+          setParentComment(undefined);
         });
 
       toast.promise(promise, {

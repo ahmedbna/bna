@@ -16,6 +16,7 @@ import Link from 'next/link';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormMessage,
@@ -23,7 +24,10 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { SendImage } from '@/components/modals/send-image';
-import { Comments } from '@/components/comment';
+import { Comments } from '@/components/comments/comments';
+import { useState } from 'react';
+import { Doc, Id } from '@/convex/_generated/dataModel';
+import { getReplies } from '@/lib/getReplies';
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -41,30 +45,49 @@ export default function Clubhouse({ params }: Props) {
   const clubSlug = params.slug;
   const { user } = useUser();
 
+  const [parentComment, setParentComment] = useState<
+    Doc<'clubhouses'> | undefined
+  >(undefined);
   const club = useQuery(api.clubs.get, { slug: clubSlug });
   const clubComments = useQuery(api.clubhouses.clubComments, { clubSlug });
   const comment = useMutation(api.clubhouses.create);
+  const reply = useMutation(api.clubhouses.reply);
+
+  const replies = clubComments ? getReplies(clubComments) : clubComments;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    await comment({
-      clubSlug: clubSlug,
-      content: data.content,
-      contentType: 'text',
-    });
+    if (parentComment) {
+      await reply({
+        clubSlug: clubSlug,
+        content: data.content,
+        contentType: 'text',
+        parentId: parentComment._id,
+      });
+    } else {
+      await comment({
+        clubSlug: clubSlug,
+        content: data.content,
+        contentType: 'text',
+      });
+    }
+
     form.setValue('content', '');
+    setParentComment(undefined);
   };
 
   return (
     <div className='h-full flex flex-col gap-2'>
-      <div className='flex items-center bg-muted/50 pt-14 pb-4 px-8'>
+      <div className='flex items-center bg-muted/50 py-6  px-8'>
         <p className='font-bold text-4xl'>{`${club?.name} Clubhouse`}</p>
       </div>
       <div className='flex-1 overflow-y-auto px-8 '>
-        {clubComments ? <Comments comments={clubComments} /> : null}
+        {replies ? (
+          <Comments comments={replies} setParentComment={setParentComment} />
+        ) : null}
       </div>
       <Form {...form}>
         <form
@@ -77,6 +100,21 @@ export default function Clubhouse({ params }: Props) {
             render={({ field }) => (
               <FormItem className='flex-grow'>
                 <FormMessage />
+                {parentComment ? (
+                  <div className='flex items-center gap-2'>
+                    <FormDescription className='text-green-600'>
+                      Reply to {parentComment?.userInfo?.name}
+                    </FormDescription>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => setParentComment(undefined)}
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                ) : null}
+
                 <FormControl>
                   <Textarea
                     placeholder='Write your comment here'
@@ -92,7 +130,11 @@ export default function Clubhouse({ params }: Props) {
             <Button className='' type='submit'>
               Comment
             </Button>
-            <SendImage clubSlug={clubSlug} />
+            <SendImage
+              clubSlug={clubSlug}
+              parentComment={parentComment}
+              setParentComment={setParentComment}
+            />
           </div>
         </form>
       </Form>

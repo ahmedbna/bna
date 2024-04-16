@@ -26,6 +26,32 @@ export const create = mutation({
   },
 });
 
+export const reply = mutation({
+  args: {
+    clubSlug: v.string(),
+    content: v.string(),
+    contentType: v.string(),
+    parentId: v.id('clubhouses'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+    const userId = identity.subject;
+
+    const comment = await ctx.db.insert('clubhouses', {
+      userId: userId,
+      clubSlug: args.clubSlug,
+      content: args.content,
+      contentType: args.contentType,
+      parentId: args.parentId,
+    });
+
+    return comment;
+  },
+});
+
 export const deleteComment = mutation({
   args: {
     commentId: v.id('clubhouses'),
