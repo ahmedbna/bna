@@ -60,6 +60,7 @@ export const CommentsDrawer = ({ size = 'sm', post }: Props) => {
     await comment({
       postId: post._id,
       content: data.content,
+      contentType: 'text',
     });
 
     form.setValue('content', '');

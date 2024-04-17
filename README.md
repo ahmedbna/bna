@@ -7,5 +7,7 @@
 - [x] Club users
 - [x] Clubhouse users
 - [x] Remove a club from post
-- [ ] React to a comment with emoji
+- [x] React to a comment with emoji
+- [ ] Emoji reactions modal users
 - [ ] Audio comment
+- [ ] Video comment

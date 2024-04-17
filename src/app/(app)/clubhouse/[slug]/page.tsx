@@ -1,18 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'convex/react';
-import { PostCard } from '@/components/post';
 import { api } from '@/convex/_generated/api';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { FollowersModal } from '@/components/followers-modal';
-import { Spinner } from '@/components/spinner';
 import EmptyPage from '@/components/empty-page';
 import { useUser } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import {
   Form,
   FormControl,
@@ -22,11 +18,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { SendImage } from '@/components/modals/send-image';
 import { Comments } from '@/components/comments/comments';
-import { useState } from 'react';
-import { Doc, Id } from '@/convex/_generated/dataModel';
+import { Doc } from '@/convex/_generated/dataModel';
 import { getReplies } from '@/lib/getReplies';
 
 const FormSchema = z.object({
@@ -84,7 +78,7 @@ export default function Clubhouse({ params }: Props) {
 
   return (
     <div className='h-full flex flex-col gap-2'>
-      <div className='flex items-center bg-muted/50 py-6  px-8'>
+      <div className='flex items-center bg-muted/50 py-6 px-8'>
         <div>
           <p className='font-bold text-4xl'>{`${club?.name} Clubhouse`}</p>
           <p className='text text-muted-foreground mt-2'>

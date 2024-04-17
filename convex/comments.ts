@@ -6,6 +6,7 @@ export const comment = mutation({
   args: {
     postId: v.id('posts'),
     content: v.string(),
+    contentType: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -18,6 +19,33 @@ export const comment = mutation({
       userId: userId,
       postId: args.postId,
       content: args.content,
+      contentType: args.contentType,
+    });
+
+    return comment;
+  },
+});
+
+export const reply = mutation({
+  args: {
+    postId: v.id('posts'),
+    content: v.string(),
+    contentType: v.string(),
+    parentId: v.id('comments'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error('Not authenticated');
+    }
+    const userId = identity.subject;
+
+    const comment = await ctx.db.insert('comments', {
+      userId: userId,
+      postId: args.postId,
+      content: args.content,
+      contentType: args.contentType,
+      parentId: args.parentId,
     });
 
     return comment;

@@ -1,25 +1,21 @@
 'use client';
 
-import { formatTimeAgo } from '@/lib/formatTimeAgo';
-import Link from 'next/link';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { useUser } from '@clerk/clerk-react';
 import { Doc } from '@/convex/_generated/dataModel';
-import Image from 'next/image';
 import { useEffect, useRef } from 'react';
-import { Button } from '../ui/button';
 import { Comment } from './comment';
+import { Separator } from '../ui/separator';
 
 type Props = {
-  comments: Array<Doc<'clubhouses'>>;
-  setParentComment: React.Dispatch<
-    React.SetStateAction<Doc<'clubhouses'> | undefined>
-  >;
+  isPost?: boolean;
+  comments: Array<Doc<'clubhouses'> & Doc<'comments'>>;
+  setParentComment: any;
 };
 
-export const Comments = ({ comments, setParentComment }: Props) => {
-  const { user } = useUser();
-
+export const Comments = ({
+  isPost = false,
+  comments,
+  setParentComment,
+}: Props) => {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -38,18 +34,21 @@ export const Comments = ({ comments, setParentComment }: Props) => {
         ? comments.map((comment) => (
             <div>
               <Comment
+                isPost={isPost}
                 key={comment._id}
                 comment={comment}
                 setParentComment={setParentComment}
               />
 
               {/* @ts-ignore */}
-              {comment.replies ? (
-                <div className='ml-6 pl-8 border-l-2 border-gray-300'>
+              {comment.replies.length ? (
+                <div className='ml-6 pl-8 mb-8'>
+                  {/* <div className='ml-6 pl-8 border-l border-zinc-400'> */}
                   {/* @ts-ignore */}
                   {comment.replies?.map((reply: Doc<'clubhouses'>) => (
                     <Comment
                       isReply
+                      isPost={isPost}
                       key={reply._id}
                       comment={reply}
                       setParentComment={setParentComment}
@@ -57,6 +56,8 @@ export const Comments = ({ comments, setParentComment }: Props) => {
                   ))}
                 </div>
               ) : null}
+
+              <Separator />
             </div>
           ))
         : null}

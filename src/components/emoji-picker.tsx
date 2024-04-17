@@ -1,6 +1,6 @@
 'use client';
 
-import EmojiPicker, { Theme } from 'emoji-picker-react';
+import EmojiSelector, { Theme } from 'emoji-picker-react';
 import { useTheme } from 'next-themes';
 import {
   Popover,
@@ -8,12 +8,15 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { SmilePlus } from 'lucide-react';
 
 interface Props {
+  open: boolean;
+  setOpen: (open: boolean) => void;
   onChange: (icon: string) => void;
 }
 
-export const EmojiSelector = ({ onChange }: Props) => {
+export const EmojiPicker = ({ open, setOpen, onChange }: Props) => {
   const { resolvedTheme } = useTheme();
   const currentTheme = (resolvedTheme || 'light') as keyof typeof themeMap;
 
@@ -25,12 +28,14 @@ export const EmojiSelector = ({ onChange }: Props) => {
   const theme = themeMap[currentTheme];
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant='outline'>Select Emoji</Button>
+        <Button size='sm' variant='outline'>
+          <SmilePlus className='w-4 h-4' />
+        </Button>
       </PopoverTrigger>
       <PopoverContent className='p-0 w-full border-none shadow-none'>
-        <EmojiPicker
+        <EmojiSelector
           height={400}
           theme={theme}
           previewConfig={{ showPreview: false }}

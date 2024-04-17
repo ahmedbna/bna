@@ -2,22 +2,25 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useRef } from 'react';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useUser } from '@clerk/clerk-react';
 import { Doc } from '@/convex/_generated/dataModel';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ClubhouseReactions } from './clubhouse-reactions';
+import { PostReactions } from './post-reactions';
 
 type Props = {
+  isPost?: boolean;
   isReply?: boolean;
-  comment: Doc<'clubhouses'>;
+  comment: any;
   setParentComment: React.Dispatch<
     React.SetStateAction<Doc<'clubhouses'> | undefined>
   >;
 };
 
 export const Comment = ({
+  isPost = false,
   isReply = false,
   comment,
   setParentComment,
@@ -27,7 +30,7 @@ export const Comment = ({
   return (
     <div
       key={comment._id}
-      className='w-full p-2 rounded-lg flex items-start justify-start mb-4'
+      className={`w-full py-4 flex items-start justify-start`}
     >
       <Link
         href={`${
@@ -71,7 +74,8 @@ export const Comment = ({
             </Button>
           ) : null}
         </div>
-        <div className='mt-2'>
+
+        <div className={`pt-2`}>
           {comment.contentType === 'text' ? (
             <p className='text-sm leading-none'>{comment?.content}</p>
           ) : comment.contentType === 'image' ? (
@@ -83,6 +87,12 @@ export const Comment = ({
               className='rounded-lg shadow-sm'
             />
           ) : null}
+
+          {isPost ? (
+            <PostReactions comment={comment} />
+          ) : (
+            <ClubhouseReactions comment={comment} />
+          )}
         </div>
       </div>
     </div>

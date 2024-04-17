@@ -17,17 +17,17 @@ import { toast } from 'sonner';
 import { ImageUp } from 'lucide-react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { Doc } from '@/convex/_generated/dataModel';
+import { Id } from '@/convex/_generated/dataModel';
 
 type Props = {
-  clubSlug: string;
-  parentComment: Doc<'clubhouses'> | undefined;
-  setParentComment: React.Dispatch<
-    React.SetStateAction<Doc<'clubhouses'> | undefined>
-  >;
+  postId?: Id<'posts'>;
+  clubSlug?: string;
+  parentComment: any;
+  setParentComment: any;
 };
 
 export const SendImage = ({
+  postId,
   clubSlug,
   parentComment,
   setParentComment,
@@ -39,6 +39,9 @@ export const SendImage = ({
 
   const comment = useMutation(api.clubhouses.create);
   const reply = useMutation(api.clubhouses.reply);
+
+  const postComment = useMutation(api.comments.comment);
+  const postReply = useMutation(api.comments.reply);
 
   const handleSendImage = () => {
     setDisabled(true);
@@ -52,19 +55,38 @@ export const SendImage = ({
           },
         })
         .then((res) => {
-          if (parentComment) {
-            reply({
-              clubSlug: clubSlug,
-              content: res.url,
-              contentType: 'image',
-              parentId: parentComment._id,
-            });
-          } else {
-            comment({
-              clubSlug: clubSlug,
-              content: res.url,
-              contentType: 'image',
-            });
+          if (clubSlug) {
+            if (parentComment) {
+              reply({
+                clubSlug: clubSlug,
+                content: res.url,
+                contentType: 'image',
+                parentId: parentComment._id,
+              });
+            } else {
+              comment({
+                clubSlug: clubSlug,
+                content: res.url,
+                contentType: 'image',
+              });
+            }
+          }
+
+          if (postId) {
+            if (parentComment) {
+              postReply({
+                postId: postId,
+                content: res.url,
+                contentType: 'image',
+                parentId: parentComment._id,
+              });
+            } else {
+              postComment({
+                postId: postId,
+                content: res.url,
+                contentType: 'image',
+              });
+            }
           }
         })
         .finally(() => {
@@ -103,7 +125,7 @@ export const SendImage = ({
         />
         <DialogFooter className='w-full'>
           <Button
-            disabled={disabled}
+            disabled={!file || disabled}
             onClick={handleSendImage}
             className='w-full'
           >

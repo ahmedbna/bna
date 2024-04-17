@@ -56,6 +56,8 @@ export default defineSchema({
     userId: v.string(),
     postId: v.id('posts'),
     content: v.string(),
+    contentType: v.string(),
+    parentId: v.optional(v.id('comments')),
     userInfo: v.optional(v.any()),
   })
     .index('by_userId', ['userId'])
@@ -111,4 +113,20 @@ export default defineSchema({
     .index('by_userId', ['userId'])
     .index('by_clubSlug', ['clubSlug'])
     .index('by_clubId', ['clubId']),
+
+  reactions: defineTable({
+    clubhouseId: v.id('clubhouses'),
+    userId: v.string(),
+    reaction: v.string(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_clubhouseId', ['clubhouseId']),
+
+  commentreactions: defineTable({
+    commentId: v.id('comments'),
+    userId: v.string(),
+    reaction: v.string(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_commentId', ['commentId']),
 });

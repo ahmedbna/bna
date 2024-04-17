@@ -43,6 +43,7 @@ import {
 import { SharePost } from './share-post';
 import { CommentsDrawer } from './comments-drawer';
 import Image from 'next/image';
+import { PostComments } from './post-comments';
 
 interface Props {
   post: Doc<'posts'>;
@@ -210,7 +211,8 @@ export default function PostAuthor({ post }: Props) {
               </p>
               <p>{postlikes?.length ? postlikes.length.toString() : '0'}</p>
             </Button>
-            <CommentsDrawer post={post} size='default' />
+            <PostComments post={post} size='default' />
+            {/* <CommentsDrawer post={post} size='default' /> */}
             <Button
               variant='outline'
               onClick={handleSavePost}
