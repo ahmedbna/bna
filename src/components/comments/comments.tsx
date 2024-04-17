@@ -32,10 +32,9 @@ export const Comments = ({
     <div className='rounded-lg'>
       {comments?.length
         ? comments.map((comment) => (
-            <div>
+            <div key={comment._id}>
               <Comment
                 isPost={isPost}
-                key={comment._id}
                 comment={comment}
                 setParentComment={setParentComment}
               />
