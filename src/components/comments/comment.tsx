@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import Video from 'next-video';
 import { formatTimeAgo } from '@/lib/formatTimeAgo';
 import { useUser } from '@clerk/clerk-react';
 import { Doc } from '@/convex/_generated/dataModel';
@@ -86,6 +87,8 @@ export const Comment = ({
               alt='image'
               className='rounded-lg shadow-sm'
             />
+          ) : comment.contentType === 'video' ? (
+            <Video src={comment.content} accentColor='red' />
           ) : null}
 
           {isPost ? (

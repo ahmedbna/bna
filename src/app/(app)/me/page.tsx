@@ -14,7 +14,7 @@ import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EmptyPage from '@/components/empty-page';
 import { NewPost } from '@/components/post/new-post';
-import { FollowersModal } from '@/components/followers-modal';
+import { FollowersModal } from '@/components/modals/followers-modal';
 import { Settings } from '@/components/modals/settings';
 import { Spinner } from '@/components/spinner';
 

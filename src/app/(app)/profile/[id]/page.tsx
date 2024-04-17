@@ -4,7 +4,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { PostCard } from '@/components/post';
 import { api } from '@/convex/_generated/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { FollowersModal } from '@/components/followers-modal';
+import { FollowersModal } from '@/components/modals/followers-modal';
 import { Spinner } from '@/components/spinner';
 import EmptyPage from '@/components/empty-page';
 import { useUser } from '@clerk/clerk-react';

@@ -29,7 +29,7 @@ export const UserCard = ({ userInfo }: Props) => {
         href={`${
           userInfo.userId === user?.id ? '/me' : `/profile/${userInfo.userId}`
         }`}
-        className='flex items-end flex-grow'
+        className='flex items-center flex-grow'
       >
         <Avatar className='h-10 w-10 rounded-lg'>
           <AvatarImage src={userInfo?.pictureUrl} alt={userInfo?.name} />

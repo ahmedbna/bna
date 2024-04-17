@@ -10,4 +10,4 @@
 - [x] React to a comment with emoji
 - [ ] Emoji reactions modal users
 - [ ] Audio comment
-- [ ] Video comment
+- [x] Video comment

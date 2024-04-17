@@ -9,8 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { UserCard } from './user-card';
-import EmptyPage from './empty-page';
+import { UserCard } from '../user-card';
+import EmptyPage from '../empty-page';
 
 type Props = {
   title: string;

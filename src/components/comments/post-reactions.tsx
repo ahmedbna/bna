@@ -6,6 +6,7 @@ import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
 import { Button } from '../ui/button';
+import { Reactors } from '../modals/reactors';
 
 interface UserInfo {
   email: string;
@@ -59,14 +60,7 @@ export const PostReactions = ({ comment }: Props) => {
     <div className='flex items-center gap-2 pt-2'>
       {reactions?.length
         ? reactions.map((reaction) => (
-            <Button
-              size='sm'
-              variant='outline'
-              className='rounded-lg gap-1 flex items-center'
-            >
-              <p className='text-base'>{reaction.emoji}</p>
-              <p>{reaction.count}</p>
-            </Button>
+            <Reactors key={reaction.emoji} reaction={reaction} />
           ))
         : null}
 

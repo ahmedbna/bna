@@ -67,7 +67,7 @@ const SingleImageDropzone = React.forwardRef<HTMLInputElement, InputProps>(
       isDragAccept,
       isDragReject,
     } = useDropzone({
-      accept: { 'image/*': [] },
+      accept: { 'image/*, video/*': [] },
       multiple: false,
       disabled,
       onDrop: (acceptedFiles) => {

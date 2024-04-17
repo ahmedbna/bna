@@ -46,6 +46,7 @@ export const SendImage = ({
   const handleSendImage = () => {
     setDisabled(true);
     if (file) {
+      const contentType = file.type.split('/')[0];
       const promise = edgestore.publicFiles
         .upload({
           file,
@@ -60,14 +61,14 @@ export const SendImage = ({
               reply({
                 clubSlug: clubSlug,
                 content: res.url,
-                contentType: 'image',
+                contentType: contentType,
                 parentId: parentComment._id,
               });
             } else {
               comment({
                 clubSlug: clubSlug,
                 content: res.url,
-                contentType: 'image',
+                contentType: contentType,
               });
             }
           }
@@ -77,14 +78,14 @@ export const SendImage = ({
               postReply({
                 postId: postId,
                 content: res.url,
-                contentType: 'image',
+                contentType: contentType,
                 parentId: parentComment._id,
               });
             } else {
               postComment({
                 postId: postId,
                 content: res.url,
-                contentType: 'image',
+                contentType: contentType,
               });
             }
           }
@@ -97,8 +98,8 @@ export const SendImage = ({
         });
 
       toast.promise(promise, {
-        loading: 'Sending image...',
-        success: 'Image Sent!',
+        loading: 'Uploading...',
+        success: 'Sent!',
         error: 'Something went wrong',
       });
     }
