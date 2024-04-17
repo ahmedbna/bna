@@ -64,9 +64,9 @@ export default function Club({ params }: Props) {
             <MessagesSquare className='w-6 h-6 ml-2' />
           </Button>
         </div>
-        <p className='text text-muted-foreground mt-2'>
+        {/* <p className='text text-muted-foreground mt-2'>
           {`${members?.length} ${members?.length === 1 ? 'Member' : 'Members'}`}
-        </p>
+        </p> */}
       </div>
 
       <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-48'>
