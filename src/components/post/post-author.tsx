@@ -41,7 +41,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { SharePost } from './share-post';
-import { CommentsDrawer } from './comments-drawer';
 import Image from 'next/image';
 import { PostComments } from './post-comments';
 
