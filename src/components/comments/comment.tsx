@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ClubhouseReactions } from './clubhouse-reactions';
 import { PostReactions } from './post-reactions';
+import { AudioPlayer } from '../audio/audio-player';
 
 type Props = {
   isPost?: boolean;
@@ -78,17 +79,23 @@ export const Comment = ({
 
         <div className={`pt-2`}>
           {comment.contentType === 'text' ? (
-            <p className='text-sm leading-none'>{comment?.content}</p>
+            <p className='text-base leading-none'>{comment?.content}</p>
           ) : comment.contentType === 'image' ? (
             <Image
               src={comment.content}
-              width={300}
-              height={300}
+              width={400}
+              height={400}
               alt='image'
-              className='rounded-lg shadow-sm'
+              className='rounded-xl shadow-sm'
             />
           ) : comment.contentType === 'video' ? (
-            <Video src={comment.content} accentColor='red' />
+            <Video
+              src={comment.content}
+              accentColor='red'
+              className='rounded-xl shadow-sm'
+            />
+          ) : comment.contentType === 'audio' ? (
+            <AudioPlayer audioUrl={comment.content} />
           ) : null}
 
           {isPost ? (

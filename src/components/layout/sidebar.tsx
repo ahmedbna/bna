@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Header } from './header';
-import { NewPost } from './post/new-post';
-import { ProPlan } from './pro/pro-plan';
+import { NewPost } from '../post/new-post';
+import { ProPlan } from '../pro/pro-plan';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { Spinner } from './spinner';
+import { Spinner } from '../spinner';
 import { Doc } from '@/convex/_generated/dataModel';
 import { useRouter } from 'next/navigation';
 

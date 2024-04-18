@@ -22,6 +22,8 @@ import { SendImage } from '@/components/modals/send-image';
 import { Comments } from '@/components/comments/comments';
 import { Doc } from '@/convex/_generated/dataModel';
 import { getReplies } from '@/lib/getReplies';
+import { RecordAudio } from '@/components/audio/record-audio';
+import { Spinner } from '@/components/spinner';
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -76,6 +78,14 @@ export default function Clubhouse({ params }: Props) {
     setParentComment(undefined);
   };
 
+  if (clubComments === undefined) {
+    return (
+      <div className='h-full flex items-center justify-center'>
+        <Spinner size='lg' />
+      </div>
+    );
+  }
+
   return (
     <div className='h-full flex flex-col gap-2'>
       <div className='flex items-center bg-muted/50 py-6 px-8'>
@@ -101,7 +111,7 @@ export default function Clubhouse({ params }: Props) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='px-8 pb-4 w-full flex items-end gap-4'
+          className='px-8 pb-4 w-full flex flex-col md:flex-row md:items-end gap-4'
         >
           <FormField
             control={form.control}
@@ -136,10 +146,16 @@ export default function Clubhouse({ params }: Props) {
           />
 
           <div className='flex items-center gap-2'>
-            <Button className='' type='submit'>
+            <Button className='w-full' type='submit'>
               Comment
             </Button>
+
             <SendImage
+              clubSlug={clubSlug}
+              parentComment={parentComment}
+              setParentComment={setParentComment}
+            />
+            <RecordAudio
               clubSlug={clubSlug}
               parentComment={parentComment}
               setParentComment={setParentComment}

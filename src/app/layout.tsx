@@ -7,7 +7,7 @@ import { SearchCommand } from '@/components/search';
 import { EdgeStoreProvider } from '@/lib/edgestore';
 import '@/styles/globals.css';
 import '@mantine/core/styles.css';
-import { Home } from '@/components/home-layout';
+import { Home } from '@/components/layout/home-layout';
 
 const inter = Inter({ subsets: ['latin'] });
 

@@ -32,6 +32,7 @@ import { Comments } from '@/components/comments/comments';
 import { Doc } from '@/convex/_generated/dataModel';
 import { getReplies } from '@/lib/getReplies';
 import { MessageCircle } from 'lucide-react';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -45,6 +46,8 @@ type Props = {
 };
 
 export const PostComments = ({ size = 'sm', post }: Props) => {
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+
   const postId = post._id;
 
   const [parentComment, setParentComment] = useState<
@@ -97,7 +100,10 @@ export const PostComments = ({ size = 'sm', post }: Props) => {
           <p>{commentsCount?.length ? commentsCount.length.toString() : '0'}</p>
         </Button>
       </SheetTrigger>
-      <SheetContent className='h-full flex flex-col'>
+      <SheetContent
+        side={isDesktop ? 'right' : 'bottom'}
+        className='h-full flex flex-col'
+      >
         <SheetHeader>
           <SheetTitle>{post.title}</SheetTitle>
           {/* <SheetDescription>Comments</SheetDescription> */}

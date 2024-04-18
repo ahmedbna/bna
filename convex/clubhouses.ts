@@ -1,5 +1,5 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { internalMutation, mutation, query } from './_generated/server';
 import { asyncMap } from 'convex-helpers';
 
 export const create = mutation({
@@ -115,4 +115,15 @@ export const clubComments = query({
         .first(),
     }));
   },
+});
+
+export const clearDayComment = internalMutation(async (ctx) => {
+  const comments = await ctx.db
+    .query('clubhouses')
+    // .filter((q) => q.gte('creationTime', 342443223))
+    .collect();
+
+  // for (const message of await ctx.db.query('clubhouses').collect()) {
+  //   await ctx.db.delete(message._id);
+  // }
 });
