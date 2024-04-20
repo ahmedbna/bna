@@ -1,12 +1,30 @@
 import { v } from 'convex/values';
 import { internalMutation, mutation, query } from './_generated/server';
+import { internal } from './_generated/api';
 import { asyncMap } from 'convex-helpers';
+
+export const destruct = internalMutation({
+  args: {
+    messageId: v.id('clubhouses'),
+  },
+  handler: async (ctx, args) => {
+    const message = await ctx.db.get(args.messageId);
+    if (!message) return;
+    if (message.contentType !== 'text' && message.storageId) {
+      await ctx.storage.delete(message.storageId);
+      await ctx.db.delete(args.messageId);
+    } else {
+      await ctx.db.delete(args.messageId);
+    }
+  },
+});
 
 export const create = mutation({
   args: {
     clubSlug: v.string(),
     content: v.string(),
     contentType: v.string(),
+    storageId: v.optional(v.id('_storage')),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -15,14 +33,36 @@ export const create = mutation({
     }
     const userId = identity.subject;
 
-    const comment = await ctx.db.insert('clubhouses', {
-      userId: userId,
-      clubSlug: args.clubSlug,
-      content: args.content,
-      contentType: args.contentType,
-    });
+    if (args.storageId) {
+      const contentUrl = await ctx.storage.getUrl(args.storageId);
 
-    return comment;
+      const messageId = await ctx.db.insert('clubhouses', {
+        userId: userId,
+        clubSlug: args.clubSlug,
+        content: contentUrl || '',
+        contentType: args.contentType,
+        storageId: args.storageId,
+      });
+
+      await ctx.scheduler.runAfter(86400000, internal.clubhouses.destruct, {
+        messageId,
+      });
+
+      return messageId;
+    } else {
+      const messageId = await ctx.db.insert('clubhouses', {
+        userId: userId,
+        clubSlug: args.clubSlug,
+        content: args.content,
+        contentType: args.contentType,
+      });
+
+      await ctx.scheduler.runAfter(86400000, internal.clubhouses.destruct, {
+        messageId,
+      });
+
+      return messageId;
+    }
   },
 });
 
@@ -31,6 +71,7 @@ export const reply = mutation({
     clubSlug: v.string(),
     content: v.string(),
     contentType: v.string(),
+    storageId: v.optional(v.id('_storage')),
     parentId: v.id('clubhouses'),
   },
   handler: async (ctx, args) => {
@@ -40,59 +81,42 @@ export const reply = mutation({
     }
     const userId = identity.subject;
 
-    const comment = await ctx.db.insert('clubhouses', {
-      userId: userId,
-      clubSlug: args.clubSlug,
-      content: args.content,
-      contentType: args.contentType,
-      parentId: args.parentId,
-    });
+    if (args.storageId) {
+      const contentUrl = await ctx.storage.getUrl(args.storageId);
 
-    return comment;
+      const messageId = await ctx.db.insert('clubhouses', {
+        userId: userId,
+        clubSlug: args.clubSlug,
+        content: contentUrl || '',
+        contentType: args.contentType,
+        storageId: args.storageId,
+        parentId: args.parentId,
+      });
+
+      await ctx.scheduler.runAfter(86400000, internal.clubhouses.destruct, {
+        messageId,
+      });
+
+      return messageId;
+    } else {
+      const messageId = await ctx.db.insert('clubhouses', {
+        userId: userId,
+        clubSlug: args.clubSlug,
+        content: args.content,
+        contentType: args.contentType,
+        parentId: args.parentId,
+      });
+
+      await ctx.scheduler.runAfter(86400000, internal.clubhouses.destruct, {
+        messageId,
+      });
+
+      return messageId;
+    }
   },
 });
 
-export const deleteComment = mutation({
-  args: {
-    commentId: v.id('clubhouses'),
-  },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error('Not authenticated');
-    }
-
-    const userId = identity.subject;
-
-    const existingComment = await ctx.db.get(args.commentId);
-
-    if (!existingComment) {
-      throw new Error('Not found');
-    }
-
-    if (existingComment.userId !== userId) {
-      throw new Error('Unauthorized');
-    }
-
-    await ctx.db.delete(args.commentId);
-  },
-});
-
-// export const commentsCount = query({
-//   args: {
-//     clubSlug: v.string(),
-//   },
-//   handler: async (ctx, args) => {
-//     const comments = await ctx.db
-//       .query('comments')
-//       .withIndex('by_postId', (q) => q.eq('postId', args.postId))
-//       .collect();
-
-//     return comments;
-//   },
-// });
-
-export const clubComments = query({
+export const clubMessages = query({
   args: {
     clubSlug: v.string(),
   },
@@ -102,28 +126,31 @@ export const clubComments = query({
       throw new Error('Not authenticated');
     }
 
-    const comments = await ctx.db
+    const messages = await ctx.db
       .query('clubhouses')
       .withIndex('by_clubSlug', (q) => q.eq('clubSlug', args.clubSlug))
       .collect();
 
-    return await asyncMap(comments, async (comment) => ({
-      ...comment,
+    return await asyncMap(messages, async (message) => ({
+      ...message,
       userInfo: await ctx.db
         .query('users')
-        .withIndex('by_userId', (q) => q.eq('userId', comment.userId))
+        .withIndex('by_userId', (q) => q.eq('userId', message.userId))
         .first(),
     }));
   },
 });
 
-export const clearDayComment = internalMutation(async (ctx) => {
-  const comments = await ctx.db
-    .query('clubhouses')
-    // .filter((q) => q.gte('creationTime', 342443223))
-    .collect();
+// export const messagesCount = query({
+//   args: {
+//     clubSlug: v.string(),
+//   },
+//   handler: async (ctx, args) => {
+//     const messages = await ctx.db
+//       .query('messages')
+//       .withIndex('by_postId', (q) => q.eq('postId', args.postId))
+//       .collect();
 
-  // for (const message of await ctx.db.query('clubhouses').collect()) {
-  //   await ctx.db.delete(message._id);
-  // }
-});
+//     return messages;
+//   },
+// });

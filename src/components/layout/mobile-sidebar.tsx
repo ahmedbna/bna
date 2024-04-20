@@ -33,13 +33,14 @@ export const MobileSidebar = () => {
     );
   }
 
-  const handleJoinClub = (club: Doc<'clubs'>) => {
+  const handleJoinClubhouse = (club: Doc<'clubs'>) => {
     const promise = join({ clubId: club._id, clubSlug: club.slug }).finally(
       () => {
-        router.push(`/club/${club.slug}`);
+        router.push(`/clubhouse/${club.slug}`);
       }
     );
   };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -86,7 +87,7 @@ export const MobileSidebar = () => {
               <Button
                 key={club._id}
                 variant='ghost'
-                onClick={() => handleJoinClub(club)}
+                onClick={() => handleJoinClubhouse(club)}
                 className='w-full items-center justify-start font-normal'
               >
                 {club.name}

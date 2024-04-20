@@ -20,6 +20,7 @@ import { Id } from '@/convex/_generated/dataModel';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { useTheme } from 'next-themes';
+import { Spinner } from '../spinner';
 
 type Props = {
   postId?: Id<'posts'>;
@@ -34,19 +35,18 @@ export const RecordAudio = ({
   parentComment,
   setParentComment,
 }: Props) => {
-  const { resolvedTheme } = useTheme();
   const { edgestore } = useEdgeStore();
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [blob, setBlob] = useState<Blob | null>(null);
 
+  const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const comment = useMutation(api.clubhouses.create);
   const reply = useMutation(api.clubhouses.reply);
 
   const postComment = useMutation(api.comments.comment);
   const postReply = useMutation(api.comments.reply);
-
-  // resolvedTheme === 'dark' ? 'dark' : 'light';
 
   // Initialize the recorder controls using the hook
   const recorderControls = useVoiceVisualizer();
@@ -77,70 +77,87 @@ export const RecordAudio = ({
   const handleSendAudio = async () => {
     if (!blob) return;
     setDisabled(true);
+    setLoading(true);
 
     try {
       const audioBlob = (await convertBlobToAudio(blob)) as Blob;
       const audioFile = new File([audioBlob], 'a.wav', { type: blob.type });
 
-      const promise = edgestore.publicFiles
-        .upload({
-          file: audioFile,
-          onProgressChange: (progress) => {
-            // you can use this to show a progress bar
-            console.log(progress);
-          },
-        })
-        .then((res) => {
-          if (clubSlug) {
-            if (parentComment) {
-              reply({
-                clubSlug: clubSlug,
-                content: res.url,
-                contentType: 'audio',
-                parentId: parentComment._id,
-              });
-            } else {
-              comment({
-                clubSlug: clubSlug,
-                content: res.url,
-                contentType: 'audio',
-              });
-            }
-          }
-
-          if (postId) {
-            if (parentComment) {
-              postReply({
-                postId: postId,
-                content: res.url,
-                contentType: 'audio',
-                parentId: parentComment._id,
-              });
-            } else {
-              postComment({
-                postId: postId,
-                content: res.url,
-                contentType: 'audio',
-              });
-            }
-          }
-        })
-        .finally(() => {
-          setBlob(null);
-          clearCanvas();
-          setOpen(false);
-          setDisabled(false);
-          setParentComment(undefined);
+      if (clubSlug) {
+        const postUrl = await generateUploadUrl();
+        const result = await fetch(postUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': audioFile.type },
+          body: audioFile,
         });
+        const { storageId } = await result.json();
 
-      toast.promise(promise, {
-        loading: 'Uploading...',
-        success: 'Sent!',
-        error: 'Something went wrong',
-      });
+        if (parentComment) {
+          await reply({
+            clubSlug: clubSlug,
+            content: '',
+            storageId: storageId,
+            contentType: 'audio',
+            parentId: parentComment._id,
+          });
+        } else {
+          await comment({
+            clubSlug: clubSlug,
+            content: '',
+            storageId: storageId,
+            contentType: 'audio',
+          });
+        }
+        setBlob(null);
+        clearCanvas();
+        setOpen(false);
+        setDisabled(false);
+        setParentComment(undefined);
+      } else {
+        const promise = edgestore.publicFiles
+          .upload({
+            file: audioFile,
+            onProgressChange: (progress) => {
+              // you can use this to show a progress bar
+              console.log(progress);
+            },
+          })
+          .then((res) => {
+            if (postId) {
+              if (parentComment) {
+                postReply({
+                  postId: postId,
+                  content: res.url,
+                  contentType: 'audio',
+                  parentId: parentComment._id,
+                });
+              } else {
+                postComment({
+                  postId: postId,
+                  content: res.url,
+                  contentType: 'audio',
+                });
+              }
+            }
+          })
+          .finally(() => {
+            setBlob(null);
+            clearCanvas();
+            setOpen(false);
+            setDisabled(false);
+            setParentComment(undefined);
+          });
+
+        toast.promise(promise, {
+          loading: 'Uploading...',
+          success: 'Sent!',
+          error: 'Something went wrong',
+        });
+      }
     } catch (error) {
       console.error('Error converting blob to audio:', error);
     }
+    setLoading(false);
   };
 
   const handleOpenChange = () => {
@@ -183,7 +200,7 @@ export const RecordAudio = ({
             disabled={!recordedBlob || !blob || disabled}
             onClick={handleSendAudio}
           >
-            Send Audio Message
+            {loading ? <Spinner size='sm' /> : 'Send Audio Message'}
           </Button>
         </DialogFooter>
       </DialogContent>

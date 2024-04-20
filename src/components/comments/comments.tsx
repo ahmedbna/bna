@@ -31,8 +31,10 @@ export const Comments = ({
   return (
     <div className='rounded-lg'>
       {comments?.length
-        ? comments.map((comment) => (
+        ? comments.map((comment, index) => (
             <div key={comment._id}>
+              {index !== 0 ? <Separator /> : null}
+
               <Comment
                 isPost={isPost}
                 comment={comment}
@@ -55,8 +57,6 @@ export const Comments = ({
                   ))}
                 </div>
               ) : null}
-
-              <Separator />
             </div>
           ))
         : null}

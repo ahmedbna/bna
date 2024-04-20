@@ -24,6 +24,8 @@ import { Doc } from '@/convex/_generated/dataModel';
 import { getReplies } from '@/lib/getReplies';
 import { RecordAudio } from '@/components/audio/record-audio';
 import { Spinner } from '@/components/spinner';
+import { useRouter } from 'next/navigation';
+import { LibraryBig } from 'lucide-react';
 
 const FormSchema = z.object({
   content: z.string().min(1, {
@@ -39,6 +41,7 @@ type Props = {
 
 export default function Clubhouse({ params }: Props) {
   const clubSlug = params.slug;
+  const router = useRouter();
   const { user } = useUser();
 
   const [parentComment, setParentComment] = useState<
@@ -47,12 +50,13 @@ export default function Clubhouse({ params }: Props) {
 
   const club = useQuery(api.clubs.get, { slug: clubSlug });
   const members = useQuery(api.clubguests.members, { clubSlug: clubSlug });
-  const clubComments = useQuery(api.clubhouses.clubComments, { clubSlug });
+  const clubMessages = useQuery(api.clubhouses.clubMessages, { clubSlug });
 
-  const discussion = clubComments ? getReplies(clubComments) : [];
+  const discussion = clubMessages ? getReplies(clubMessages) : [];
 
   const comment = useMutation(api.clubhouses.create);
   const reply = useMutation(api.clubhouses.reply);
+  const join = useMutation(api.clubhouseguests.join);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -78,7 +82,7 @@ export default function Clubhouse({ params }: Props) {
     setParentComment(undefined);
   };
 
-  if (clubComments === undefined) {
+  if (clubMessages === undefined) {
     return (
       <div className='h-full flex items-center justify-center'>
         <Spinner size='lg' />
@@ -86,16 +90,32 @@ export default function Clubhouse({ params }: Props) {
     );
   }
 
+  const handleJoinClub = () => {
+    if (!club) return;
+
+    const promise = join({ clubId: club._id, clubSlug: club.slug }).finally(
+      () => {
+        router.push(`/club/${club.slug}`);
+      }
+    );
+  };
+
   return (
     <div className='h-full flex flex-col gap-2'>
-      <div className='flex items-center bg-muted/50 py-6 px-8'>
-        <div>
-          <p className='font-bold text-4xl'>{`${club?.name} Clubhouse`}</p>
-          <p className='text text-muted-foreground mt-2'>
-            {`${members?.length} ${members?.length === 1 ? 'Member' : 'Members'}`}
-          </p>
+      <div className='bg-muted/50 py-4 px-8'>
+        <div className='flex items-start justify-between'>
+          <p className='font-bold text-2xl'>{`${club?.name} Clubhouse`}</p>
+
+          <Button className='font-bold text-lg' onClick={handleJoinClub}>
+            Club Posts
+            <LibraryBig className='w-6 h-6 ml-2' />
+          </Button>
         </div>
+        <p className='text-sm text-muted-foreground'>
+          {`${members?.length} ${members?.length === 1 ? 'Member' : 'Members'}`}
+        </p>
       </div>
+
       <div className='flex-1 overflow-y-auto px-8 '>
         {discussion.length ? (
           <Comments comments={discussion} setParentComment={setParentComment} />
@@ -136,7 +156,7 @@ export default function Clubhouse({ params }: Props) {
 
                 <FormControl>
                   <Textarea
-                    placeholder='Write your comment here'
+                    placeholder='Messages will be automatically deleted after 24 hours!'
                     className='resize-none'
                     {...field}
                   />

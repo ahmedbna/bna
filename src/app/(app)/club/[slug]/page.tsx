@@ -1,14 +1,10 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useMutation, useQuery } from 'convex/react';
+import { useQuery } from 'convex/react';
 import { PostCard } from '@/components/post';
 import { api } from '@/convex/_generated/api';
 import { Spinner } from '@/components/spinner';
 import EmptyPage from '@/components/empty-page';
-import { Button } from '@/components/ui/button';
-import { Doc } from '@/convex/_generated/dataModel';
-import { MessagesSquare } from 'lucide-react';
 
 type Props = {
   params: {
@@ -18,11 +14,9 @@ type Props = {
 
 export default function Club({ params }: Props) {
   const clubSlug = params.slug;
-  const router = useRouter();
 
   const club = useQuery(api.clubs.get, { slug: clubSlug });
   const members = useQuery(api.clubguests.members, { clubSlug: clubSlug });
-  const join = useMutation(api.clubhouseguests.join);
 
   if (club === undefined) {
     return (
@@ -42,27 +36,11 @@ export default function Club({ params }: Props) {
     );
   }
 
-  const handleJoinClubhouse = (club: Doc<'clubs'>) => {
-    const promise = join({ clubId: club._id, clubSlug: club.slug }).finally(
-      () => {
-        router.push(`/clubhouse/${club.slug}`);
-      }
-    );
-  };
-
   return (
     <div className='h-full flex flex-col gap-8 py-14 px-8'>
       <div>
         <div className='flex items-end gap-4'>
           <p className='font-bold text-4xl'>{club?.name}</p>
-          <Button
-            size='lg'
-            className='font-bold text-lg'
-            onClick={() => handleJoinClubhouse(club)}
-          >
-            Clubhouse
-            <MessagesSquare className='w-6 h-6 ml-2' />
-          </Button>
         </div>
         {/* <p className='text text-muted-foreground mt-2'>
           {`${members?.length} ${members?.length === 1 ? 'Member' : 'Members'}`}

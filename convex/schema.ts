@@ -103,6 +103,7 @@ export default defineSchema({
     contentType: v.string(),
     userInfo: v.optional(v.any()),
     parentId: v.optional(v.id('clubhouses')),
+    storageId: v.optional(v.id('_storage')),
   }).index('by_clubSlug', ['clubSlug']),
 
   clubhouseguests: defineTable({
