@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Header } from './header';
 import { NewPost } from '../post/new-post';
@@ -14,7 +13,7 @@ import { useRouter } from 'next/navigation';
 export const Sidebar = () => {
   const router = useRouter();
   const clubs = useQuery(api.clubs.getClubs);
-  const join = useMutation(api.clubguests.join);
+  const join = useMutation(api.clubhouseguests.join);
 
   if (clubs === undefined) {
     return (

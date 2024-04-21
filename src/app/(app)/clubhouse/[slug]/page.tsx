@@ -56,7 +56,7 @@ export default function Clubhouse({ params }: Props) {
 
   const comment = useMutation(api.clubhouses.create);
   const reply = useMutation(api.clubhouses.reply);
-  const join = useMutation(api.clubhouseguests.join);
+  const join = useMutation(api.clubguests.join);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
