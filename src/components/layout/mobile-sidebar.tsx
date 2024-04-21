@@ -16,10 +16,12 @@ import { SignInButton, useUser } from '@clerk/clerk-react';
 import { AvatarImage, Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { AvatarIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export const MobileSidebar = () => {
   const router = useRouter();
   const { user } = useUser();
+  const [open, setOpen] = useState(false);
   const { isLoading, isAuthenticated } = useConvexAuth();
 
   const clubs = useQuery(api.clubs.getClubs);
@@ -34,6 +36,7 @@ export const MobileSidebar = () => {
   }
 
   const handleJoinClubhouse = (club: Doc<'clubs'>) => {
+    setOpen(false);
     const promise = join({ clubId: club._id, clubSlug: club.slug }).finally(
       () => {
         router.push(`/clubhouse/${club.slug}`);
@@ -42,7 +45,7 @@ export const MobileSidebar = () => {
   };
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant='ghost' size='icon'>
           <Menu className='h-6 w-6' />
@@ -50,17 +53,21 @@ export const MobileSidebar = () => {
         </Button>
       </SheetTrigger>
       <SheetContent className='h-full flex flex-col gap-4 px-3 pt-4'>
-        <div className='bg-background flex items-center w-full pb-2 gap-4 border-b shadow-sm'>
+        <div className='bg-background flex items-center w-full pb-2 gap-2 border-b shadow-sm'>
           {isLoading && <Spinner />}
 
           {!isLoading && !isAuthenticated && (
-            <>
+            <Button
+              variant='ghost'
+              className='p-0'
+              onClick={() => setOpen(false)}
+            >
               <SignInButton mode='modal'>
                 <Button className='p-1.5' variant='ghost'>
                   <AvatarIcon className='w-6 h-6' />
                 </Button>
               </SignInButton>
-            </>
+            </Button>
           )}
 
           {!isLoading && isAuthenticated && (
@@ -77,7 +84,9 @@ export const MobileSidebar = () => {
           <ModeToggle />
         </div>
 
-        <NewPost />
+        <Button variant='ghost' className='p-0' onClick={() => setOpen(false)}>
+          <NewPost />
+        </Button>
 
         <div className='flex-1 overflow-y-auto'>
           <h2 className='px-5 text-xl font-bold tracking-tight'>Clubs</h2>

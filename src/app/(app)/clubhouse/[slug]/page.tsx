@@ -102,13 +102,13 @@ export default function Clubhouse({ params }: Props) {
 
   return (
     <div className='h-full flex flex-col gap-2'>
-      <div className='bg-muted/50 py-4 px-8'>
+      <div className='bg-muted/50 py-4 px-4 md:px-8'>
         <div className='flex items-start justify-between'>
-          <p className='font-bold text-2xl'>{`${club?.name} Clubhouse`}</p>
+          <p className='font-bold text-xl md:text-2xl'>{`${club?.name} Clubhouse`}</p>
 
-          <Button className='font-bold text-lg' onClick={handleJoinClub}>
+          <Button className='font-bold md:text-lg' onClick={handleJoinClub}>
             Club Posts
-            <LibraryBig className='w-6 h-6 ml-2' />
+            <LibraryBig className='w-5 h-5 md:w-6 md:h-6 ml-2' />
           </Button>
         </div>
         <p className='text-sm text-muted-foreground'>
@@ -116,7 +116,7 @@ export default function Clubhouse({ params }: Props) {
         </p>
       </div>
 
-      <div className='flex-1 overflow-y-auto px-8 '>
+      <div className='flex-1 overflow-y-auto px-4 md:px-8'>
         {discussion.length ? (
           <Comments comments={discussion} setParentComment={setParentComment} />
         ) : (
@@ -131,7 +131,7 @@ export default function Clubhouse({ params }: Props) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='px-8 pb-4 w-full flex flex-col md:flex-row md:items-end gap-4'
+          className='px-4 md:px-8 pb-4 w-full flex flex-col md:flex-row md:items-end gap-4'
         >
           <FormField
             control={form.control}
